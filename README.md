@@ -1,2 +1,4 @@
-# vbscripts
-vbscript functions for MS Excel ease of use
+
+## For ms excel ease of use
+
+Modules for excel VBScript
