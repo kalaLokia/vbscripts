@@ -1,4 +1,3 @@
+##For MS Excel
 
-## For ms excel ease of use
-
-Modules for excel VBScript
+Modules for regex based excel VBScript functions
