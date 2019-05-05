@@ -1,0 +1,17 @@
+Function Pincode(pin As String)
+    Dim RE As Object
+    Dim MATCH As Object
+
+    Set RE = CreateObject("VBScript.regexp")
+    RE.Pattern = "(\d{6})"
+    RE.Global = True
+    RE.ignoreCase = True
+    
+    Set MATCH = RE.Execute(pin)
+    
+    If MATCH.Count <> 0 Then
+        result = MATCH.Item(0).submatches.Item(0)
+    End If
+    
+    Pincode = result
+End Function
