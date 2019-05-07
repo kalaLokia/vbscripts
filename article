@@ -1,26 +1,13 @@
 Function Article(artic As String)
-
 Dim RE As Object
-
 Dim MATCH As Object
-
 Set RE = CreateObject("VBScript.regexp")
-
-RE.Pattern = "((D\s(\d{4}))|(D(\d{4}))|(\d{4}))"
-
+RE.Pattern = "(\b(D ?\d{4}|\d{4})\b)"
 RE.Global = True
-
 RE.ignoreCase = FALSE
-
-Set MATCH = RE.Execute(pin)
-
+Set MATCH = RE.Execute(artic)
 If MATCH.Count <> 0 Then
-
 result = MATCH.Item(0).submatches.Item(0)
-
 End If
-
 Article = result
-
 End Function
-
