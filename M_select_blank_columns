@@ -1,0 +1,42 @@
+Sub Select_Blank_Columns()
+'Select all entire blank Columns in selected range
+'Made by kalaLokia
+
+Dim rColumn As Range
+Dim rSelect As Range
+Dim rSelection As Range
+ 
+  'Check that a range is selected
+  If TypeName(Selection) <> "Range" Then
+    MsgBox "Please select a range first.", vbOKOnly, "Select Blank Columns Macro"
+    Exit Sub
+  End If
+  
+  'Check that multiple cells are selected
+  If Selection.Cells.Count = 1 Then
+    Set rSelection = ActiveSheet.UsedRange
+  Else
+    Set rSelection = Selection
+  End If
+ 
+  'Loop through each Column and add blank Columns to rSelect range
+  For Each rColumn In rSelection.Columns
+    If WorksheetFunction.CountA(rColumn) = 0 Then
+      If rSelect Is Nothing Then
+        Set rSelect = rColumn
+      Else
+        Set rSelect = Union(rSelect, rColumn)
+      End If
+    End If
+  Next rColumn
+  
+  'Select blank Columns
+  If rSelect Is Nothing Then
+    MsgBox "No blank Columns were found.", vbOKOnly, "Select Blank Columns Macro"
+    Exit Sub
+  Else
+    rSelect.Select
+  End If
+  
+End Sub
+
