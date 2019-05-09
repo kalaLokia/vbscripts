@@ -2,7 +2,7 @@ Function article(artic As String)
 Dim RE As Object
 Dim MATCH As Object
 Set RE = CreateObject("VBScript.regexp")
-RE.Pattern = "(\b(D(-| )?\d{4}|\d{4})\b)"
+RE.Pattern = "(\b((D(| ))?\d{4})(?=Z\b|\b))"
 RE.Global = True
 RE.ignoreCase = FALSE
 Set MATCH = RE.Execute(artic)
