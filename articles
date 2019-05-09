@@ -1,0 +1,13 @@
+Function articles(artic As String)
+Dim RE As Object
+Dim MATCH As Object
+Set RE = CreateObject("VBScript.regexp")
+RE.Pattern = "(\b(D(-| )?\d{4}|\d{4})Z?\b)"
+RE.Global = True
+RE.ignoreCase = FALSE
+Set MATCH = RE.Execute(artic)
+If MATCH.Count <> 0 Then
+result = MATCH.Item(0).submatches.Item(0)
+End If
+articles = result
+End Function
