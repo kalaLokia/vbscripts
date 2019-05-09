@@ -1,0 +1,8 @@
+Sub delete_empty_columns()
+  Dim r As Range, columns As Long, i As Long
+  Set r = ActiveSheet.Range("A1:Z50")
+  columns = r.columns.Count
+  For i = columns To 1 Step (-1)
+    If WorksheetFunction.CountA(r.columns(i)) = 0 Then r.columns(i).Delete
+  Next
+End Sub
