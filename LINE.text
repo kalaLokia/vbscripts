@@ -1,13 +1,12 @@
-Sub RowCount() 
-Dim SearchCell As Range 
-With Worksheets("BONG") 
-If Not Application.IsNA(Application.MATCH("COMPONENTS WITHOUT BOM", Range("B:B"), 0)) 
-Then 
-Set SearchCell = Cells(Application.MATCH("COMPONENTS WITHOUT BOM", Range("B:B"), 0), 2) 
-MsgBox "Merged rows: " & SearchCell.MergeArea.Rows.Count 
+Function RowCount(RowName as String)
+   Dim SearchCell As Range 
+   With Worksheets("BONG") 
+    If Not Application.IsNA(Application.MATCH(RowName, Range("B:B"), 0)) 
+      Then 
+        Set SearchCell = Cells(Application.MATCH(RowName, Range("B:B"), 0), 2) 
+        RowCount = SearchCell.MergeArea.Rows.Count 
+    End If 
 
-End If 
+   End With 
 
-End With 
-
-End Sub
+End Function
