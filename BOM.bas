@@ -26,9 +26,9 @@ fcs2 = "4-FCS2-"
 scs2 = "4-SCS2-"
 scf(0) = "4-SCF-"
 scf(1) = "4-SCF1-"
-
+Dim n As Integer
 r = 3
-c = 0
+c = n = 0
 artNo = Worksheets("BOM").Range("D3")
 artColor = Worksheets("BOM").Range("D4")
 artCat = Worksheets("BOM").Range("D5")
@@ -52,12 +52,15 @@ Worksheets("test111").Range("D" & r + i).Value = scCount(i)
 Next i
 r = r + i
 For j = 0 To cellX(1) - 1
-Worksheets("test111").Range("B" & r + j).Value = j + i
-Worksheets("test111").Range("C" & r + j).Value = Worksheets("BOM").Range("D" & cellX(0) + j)
-Worksheets("test111").Range("D" & r + j).Value = Worksheets("BOM").cellS(cellX(0) + j, 6)
+    If IsEmpty(Worksheets("BOM").Range("D" & cellX(0) + j).Value) = False Then
+        Worksheets("test111").Range("B" & r + n).Value = i + n
+        Worksheets("test111").Range("C" & r + n).Value = Worksheets("BOM").Range("D" & cellX(0) + j)
+        Worksheets("test111").Range("D" & r + n).Value = Worksheets("BOM").cellS(cellX(0) + j, 6)
+        n = n + 1
+    End If
 Next j
-r = r + j
-Worksheets("test111").Range("B" & r).Value = i + j
+r = r + n
+Worksheets("test111").Range("B" & r).Value = i + n
 Worksheets("test111").Range("C" & r).Value = "FGMC_OH"
 Worksheets("test111").Range("D" & r).Value = scCount(i)
 r = r + 1
@@ -70,10 +73,12 @@ For i = 0 To siz
     Worksheets("test111").Range("D" & r).Value = 1
     
     For j = 0 To cellX(1) - 1
+    If IsEmpty(Worksheets("BOM").Range("D" & cellX(0) + j).Value) = False Then
         c = c + 1
         Worksheets("test111").Range("B" & c + r).Value = c
         Worksheets("test111").Range("C" & c + r).Value = Worksheets("BOM").Range("D" & cellX(0) + j)
         Worksheets("test111").Range("D" & c + r).Value = Worksheets("BOM").cellS(cellX(0) + j, 6)
+        End If
     Next j
     
 Worksheets("test111").Range("B" & c + r + 1).Value = c + 1
@@ -171,21 +176,24 @@ For i = 0 To siz
     c = c + 1
   End If
   For j = 0 To cellX(1) - 1
-    Worksheets("test111").Range("B" & r + c + j).Value = c + j
-     Worksheets("test111").Range("C" & r + c + j).Value = Worksheets("BOM").Range("D" & cellX(0) + j)
-     Worksheets("test111").Range("D" & c + r + j).Value = Worksheets("BOM").cellS(cellX(0) + j, i + 6)
+    If IsEmpty(Worksheets("BOM").Range("D" & cellX(0) + j).Value) = False Then
+        Worksheets("test111").Range("B" & r + c).Value = c
+        Worksheets("test111").Range("C" & r + c).Value = Worksheets("BOM").Range("D" & cellX(0) + j)
+        Worksheets("test111").Range("D" & c + r).Value = Worksheets("BOM").cellS(cellX(0) + j, i + 6)
+        c = c + 1
+     End If
   Next j
-  r = r + j + c
-    Worksheets("test111").Range("B" & r).Value = c + j
-     Worksheets("test111").Range("C" & r).Value = "STITCHING-CHARGES"
-    Worksheets("test111").Range("B" & r + 1).Value = c + j + 1
-     Worksheets("test111").Range("C" & r + 1).Value = "STITCH-OH"
-    Worksheets("test111").Range("D" & r).Value = 1
-       Worksheets("test111").Range("D" & r + 1).Value = 1
+    r = r + c
+        Worksheets("test111").Range("B" & r).Value = c
+        Worksheets("test111").Range("C" & r).Value = "STITCHING-CHARGES"
+        Worksheets("test111").Range("B" & r + 1).Value = c + 1
+        Worksheets("test111").Range("C" & r + 1).Value = "STITCH-OH"
+        Worksheets("test111").Range("D" & r).Value = 1
+        Worksheets("test111").Range("D" & r + 1).Value = 1
       r = r + 2
-     Set rng = Worksheets("test111").Range("A" & x & ":A" & r - 1)
-        rng.Value = fu & art & WorksheetFunction.Text(s1 + i, "00")
-           x = r
+    Set rng = Worksheets("test111").Range("A" & x & ":A" & r - 1)
+    rng.Value = fu & art & WorksheetFunction.Text(s1 + i, "00")
+    x = r
 Next i
 
 If C_LOOK("CCP") > 0 Then
@@ -205,19 +213,23 @@ For i = 0 To siz
 Next i
 'CCP
 For i = 0 To siz
+n = 0
     For j = 0 To cellX(1) - 1
-        Worksheets("test111").Range("B" & r + j).Value = j
-        Worksheets("test111").Range("C" & r + j).Value = Worksheets("BOM").Range("D" & cellX(0) + j)
-        Worksheets("test111").Range("D" & r + j).Value = Worksheets("BOM").cellS(cellX(0) + j, 6)
+    If IsEmpty(Worksheets("BOM").Range("D" & cellX(0) + j).Value) = False Then
+        Worksheets("test111").Range("B" & r + n).Value = n
+        Worksheets("test111").Range("C" & r + n).Value = Worksheets("BOM").Range("D" & cellX(0) + j)
+        Worksheets("test111").Range("D" & r + n).Value = Worksheets("BOM").cellS(cellX(0) + j, 6)
+        n = n + 1
+        End If
     Next j
     
-Worksheets("test111").Range("B" & r + j).Value = j
-Worksheets("test111").Range("C" & r + j).Value = "CLICK_OH"
+Worksheets("test111").Range("B" & r + n).Value = n
+Worksheets("test111").Range("C" & r + n).Value = "CLICK_OH"
 Worksheets("test111").Range("D" & r + j).Value = 1
 
-Set rng = Worksheets("test111").Range("A" & r & ":A" & r + j)
+Set rng = Worksheets("test111").Range("A" & r & ":A" & r + n)
 rng.Value = ccp & art & WorksheetFunction.Text(s1 + i, "00")
-r = r + j + 1
+r = r + n + 1
 Next i
 End If
 
@@ -239,38 +251,46 @@ Next i
 
 'CCP1
 For i = 0 To siz
+n = 0
     For j = 0 To cellX(1) - 1
-        Worksheets("test111").Range("B" & r + j).Value = j
-        Worksheets("test111").Range("C" & r + j).Value = Worksheets("BOM").Range("D" & cellX(0) + j)
-        Worksheets("test111").Range("D" & r + j).Value = Worksheets("BOM").cellS(cellX(0) + j, 6)
+        If IsEmpty(Worksheets("BOM").Range("D" & cellX(0) + j).Value) = False Then
+        Worksheets("test111").Range("B" & r + n).Value = n
+        Worksheets("test111").Range("C" & r + n).Value = Worksheets("BOM").Range("D" & cellX(0) + j)
+        Worksheets("test111").Range("D" & r + n).Value = Worksheets("BOM").cellS(cellX(0) + j, 6)
+        n = n + 1
+        End If
     Next j
     
-Worksheets("test111").Range("B" & r + j).Value = j
-Worksheets("test111").Range("C" & r + j).Value = "CLICK_OH"
-Worksheets("test111").Range("D" & r + j).Value = 1
+Worksheets("test111").Range("B" & r + n).Value = n
+Worksheets("test111").Range("C" & r + n).Value = "CLICK_OH"
+Worksheets("test111").Range("D" & r + n).Value = 1
 
-Set rng = Worksheets("test111").Range("A" & r & ":A" & r + j)
+Set rng = Worksheets("test111").Range("A" & r & ":A" & r + n)
 rng.Value = ccp1 & art & WorksheetFunction.Text(s1 + i, "00")
-r = r + j + 1
+r = r + n + 1
 Next i
 End If
 If C_LOOK("CCS") > 0 Then
 'CCS
 cellX = CELL_X("CCS")
 For i = 0 To siz
+n = 0
     For j = 0 To cellX(1) - 1
-        Worksheets("test111").Range("B" & r + j).Value = j
-        Worksheets("test111").Range("C" & r + j).Value = Worksheets("BOM").Range("D" & cellX(0) + j)
-        Worksheets("test111").Range("D" & r + j).Value = Worksheets("BOM").cellS(cellX(0) + j, 6)
+    If IsEmpty(Worksheets("BOM").Range("D" & cellX(0) + j).Value) = False Then
+        Worksheets("test111").Range("B" & r + n).Value = n
+        Worksheets("test111").Range("C" & r + n).Value = Worksheets("BOM").Range("D" & cellX(0) + j)
+        Worksheets("test111").Range("D" & r + n).Value = Worksheets("BOM").cellS(cellX(0) + j, 6)
+        n = n + 1
+        End If
     Next j
     
-Worksheets("test111").Range("B" & r + j).Value = j
-Worksheets("test111").Range("C" & r + j).Value = "CLICK_OH"
-Worksheets("test111").Range("D" & r + j).Value = 1
+Worksheets("test111").Range("B" & r + n).Value = n
+Worksheets("test111").Range("C" & r + n).Value = "CLICK_OH"
+Worksheets("test111").Range("D" & r + n).Value = 1
 
-Set rng = Worksheets("test111").Range("A" & r & ":A" & r + j)
+Set rng = Worksheets("test111").Range("A" & r & ":A" & r + n)
 rng.Value = ccs & art & WorksheetFunction.Text(s1 + i, "00")
-r = r + j + 1
+r = r + n + 1
 Next i
 End If
 
@@ -278,59 +298,73 @@ End If
 If C_LOOK("MCS") > 0 Then
 cellX = CELL_X("MCS")
 For i = 0 To siz
+n = 0
     For j = 0 To cellX(1) - 1
-        Worksheets("test111").Range("B" & r + j).Value = j
-        Worksheets("test111").Range("C" & r + j).Value = "4-" & Worksheets("BOM").Range("C" & cellX(0) + j) & "-" & art
-        Worksheets("test111").Range("D" & r + j).Value = Worksheets("BOM").cellS(cellX(0) + j, 6)
+         If IsEmpty(Worksheets("BOM").Range("C" & cellX(0) + j).Value) = False Then
+        Worksheets("test111").Range("B" & r + n).Value = n
+        Worksheets("test111").Range("C" & r + n).Value = "4-" & Worksheets("BOM").Range("C" & cellX(0) + j) & "-" & art
+        Worksheets("test111").Range("D" & r + n).Value = Worksheets("BOM").cellS(cellX(0) + j, 6)
+        n = n + 1
+        End If
     Next j
     
-Worksheets("test111").Range("B" & r + j).Value = j
-Worksheets("test111").Range("C" & r + j).Value = "MARKING-CHARGES"
-Worksheets("test111").Range("D" & r + j).Value = 1
+Worksheets("test111").Range("B" & r + n).Value = n
+Worksheets("test111").Range("C" & r + n).Value = "MARKING-CHARGES"
+Worksheets("test111").Range("D" & r + n).Value = 1
 
-Set rng = Worksheets("test111").Range("A" & r & ":A" & r + j)
+Set rng = Worksheets("test111").Range("A" & r & ":A" & r + n)
 rng.Value = mcs & art & WorksheetFunction.Text(s1 + i, "00")
-r = r + j + 1
+r = r + n + 1
 Next i
 
 'FCM
+n = 0
     For j = 0 To cellX(1) - 1
+         If IsEmpty(Worksheets("BOM").Range("C" & cellX(0) + j).Value) = False Then
+         
         Worksheets("test111").Range("A" & r).Value = "4-" & Worksheets("BOM").Range("C" & cellX(0) + j) & "-" & art
         Worksheets("test111").Range("B" & r).Value = 0
-        Worksheets("test111").Range("C" & r).Value = scf(j) & art
+        Worksheets("test111").Range("C" & r).Value = scf(n) & art
         Worksheets("test111").Range("D" & r).Value = 1
         
-        Worksheets("test111").Range("A" & r + 1).Value = scf(j) & art
+        Worksheets("test111").Range("A" & r + 1).Value = scf(n) & art
         Worksheets("test111").Range("B" & r + 1).Value = 0
-        Worksheets("test111").Range("C" & r + 1).Value = Worksheets("BOM").Range("C" & C_LOOK("SCF" & j))
-        Worksheets("test111").Range("D" & r + 1).Value = Worksheets("BOM").cellS(C_LOOK("SCF" & j), 6)
+        Worksheets("test111").Range("C" & r + 1).Value = Worksheets("BOM").Range("C" & C_LOOK("SCF" & n))
+        Worksheets("test111").Range("D" & r + 1).Value = Worksheets("BOM").cellS(C_LOOK("SCF" & n), 6)
         
-        Worksheets("test111").Range("A" & r + 2).Value = scf(j) & art
+        Worksheets("test111").Range("A" & r + 2).Value = scf(n) & art
         Worksheets("test111").Range("B" & r + 2).Value = 1
         Worksheets("test111").Range("C" & r + 2).Value = "SLITT-OH"
         Worksheets("test111").Range("D" & r + 2).Value = 1
+        n = n + 1
         r = r + 3
+        End If
     Next j
 End If
 If C_LOOK("FCS") > 0 Then
+n = 0
 cellX = CELL_X("FCS")
 'FCS
     For j = 0 To cellX(1) - 1
+         If IsEmpty(Worksheets("BOM").Range("C" & cellX(0) + j).Value) = False Then
+         
         Worksheets("test111").Range("A" & r).Value = "4-" & Worksheets("BOM").Range("C" & cellX(0) + j) & "-" & art
         Worksheets("test111").Range("B" & r).Value = 0
-        Worksheets("test111").Range("C" & r).Value = scf(j) & art
+        Worksheets("test111").Range("C" & r).Value = scf(n) & art
         Worksheets("test111").Range("D" & r).Value = 1
         
-        Worksheets("test111").Range("A" & r + 1).Value = scf(j) & art
+        Worksheets("test111").Range("A" & r + 1).Value = scf(n) & art
         Worksheets("test111").Range("B" & r + 1).Value = 0
-        Worksheets("test111").Range("C" & r + 1).Value = Worksheets("BOM").Range("C" & C_LOOK("SCF" & j))
-        Worksheets("test111").Range("D" & r + 1).Value = Worksheets("BOM").cellS(C_LOOK("SCF" & j), 6)
+        Worksheets("test111").Range("C" & r + 1).Value = Worksheets("BOM").Range("C" & C_LOOK("SCF" & n))
+        Worksheets("test111").Range("D" & r + 1).Value = Worksheets("BOM").cellS(C_LOOK("SCF" & n), 6)
         
-        Worksheets("test111").Range("A" & r + 2).Value = scf(j) & art
+        Worksheets("test111").Range("A" & r + 2).Value = scf(n) & art
         Worksheets("test111").Range("B" & r + 2).Value = 1
         Worksheets("test111").Range("C" & r + 2).Value = "SLITT-OH"
         Worksheets("test111").Range("D" & r + 2).Value = 1
+        n = n + 1
         r = r + 3
+        End If
     Next j
 
  End If
@@ -338,18 +372,21 @@ cellX = CELL_X("FCS")
   If C_LOOK("SCS") > 0 Then
 cellX = CELL_X("SCS")
 'SCS
+n = 0
     For j = 0 To cellX(1) - 1
-    
-        Worksheets("test111").Range("A" & r).Value = scf(j) & art
+     If IsEmpty(Worksheets("BOM").Range("C" & cellX(0) + j).Value) = False Then
+        Worksheets("test111").Range("A" & r).Value = scf(n) & art
         Worksheets("test111").Range("B" & r).Value = 0
-        Worksheets("test111").Range("C" & r).Value = Worksheets("BOM").Range("C" & C_LOOK("SCF" & j))
-        Worksheets("test111").Range("D" & r).Value = Worksheets("BOM").cellS(C_LOOK("SCF" & j), 6)
+        Worksheets("test111").Range("C" & r).Value = Worksheets("BOM").Range("C" & C_LOOK("SCF" & n))
+        Worksheets("test111").Range("D" & r).Value = Worksheets("BOM").cellS(C_LOOK("SCF" & n), 6)
         
-        Worksheets("test111").Range("A" & r + 1).Value = scf(j) & art
+        Worksheets("test111").Range("A" & r + 1).Value = scf(n) & art
         Worksheets("test111").Range("B" & r + 1).Value = 1
         Worksheets("test111").Range("C" & r + 1).Value = "SLITT-OH"
         Worksheets("test111").Range("D" & r + 1).Value = 1
+        n = n + 1
         r = r + 2
+ End If
     Next j
 
  End If
