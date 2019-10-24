@@ -1,10 +1,11 @@
 Attribute VB_Name = "BOM"
 Sub BOMTEST()
-
+'test sample, requires "test111" sheet to excecute
 Dim artNo, artColor, artCat, s2, s1, brandSize As String
 Dim siz, c, r, l As Integer
-Dim mc, sc, fu, mpu, pcs, ccp, ccp1, ccs, fcs, fcs1, fcs2, scs1, scs2, fcm, mcs, scs, fcmx, art As String
+Dim mc, sc, fu, mpu, pcs, ccp, ccp1, ccs, fcs, fcs1, fcs2, scs1, scs2, fcm, mcs, fcmx, art As String
 Dim scf(2) As String
+Dim scs(2) As String
 Dim scCount() As Integer
 Dim rng As Range
 mc = "2-FB-"
@@ -19,9 +20,10 @@ ccs = "4-CCS-"
 fcm = "4-FCM"
 mcs = "4-MCS-"
 fcs = "4-FCS-"
-scs = "4-SCS-"
+scs(0) = "4-SCS-"
 fcs1 = "4-FCS1-"
-scs1 = "4-SCS1-"
+scs(1) = "4-SCS1-"
+scs(2) = "4-SCS1-"
 fcs2 = "4-FCS2-"
 scs2 = "4-SCS2-"
 scf(0) = "4-SCF-"
@@ -175,21 +177,21 @@ For i = 0 To siz
   End If
     If C_LOOK("SCS") > 0 Then
     Worksheets("test111").Range("B" & r + n).Value = n
-    Worksheets("test111").Range("C" & r + n).Value = scs & art
+    Worksheets("test111").Range("C" & r + n).Value = scs(0) & art
      Worksheets("test111").Range("D" & r + n).Value = Worksheets("BOM").cellS(C_LOOK("SCS"), i + 6)
      Worksheets("test111").Range("H" & r + n).Value = 4
     n = n + 1
   End If
   If C_LOOK("SCS1") > 0 Then
     Worksheets("test111").Range("B" & r + n).Value = n
-    Worksheets("test111").Range("C" & r + n).Value = scs1 & art
+    Worksheets("test111").Range("C" & r + n).Value = scs(1) & art
      Worksheets("test111").Range("D" & r + n).Value = Worksheets("BOM").cellS(C_LOOK("SCS1"), i + 6)
      Worksheets("test111").Range("H" & r + n).Value = 4
     n = n + 1
   End If
   If C_LOOK("SCS2") > 0 Then
     Worksheets("test111").Range("B" & r + n).Value = n
-    Worksheets("test111").Range("C" & r + n).Value = scs2 & art
+    Worksheets("test111").Range("C" & r + n).Value = scs(2) & art
      Worksheets("test111").Range("D" & r + n).Value = Worksheets("BOM").cellS(C_LOOK("SCS2"), i + 6)
      Worksheets("test111").Range("H" & r + n).Value = 4
     n = n + 1
@@ -415,19 +417,26 @@ cellX = CELL_X("SCS")
 n = 0
     For j = 0 To cellX(1) - 1
      If IsEmpty(Worksheets("BOM").Range("C" & cellX(0) + j).Value) = False Then
-        Worksheets("test111").Range("A" & r).Value = scf(n) & art
+      If C_LOOK("SCS" & n) > 0 Then
+     
+        Worksheets("test111").Range("A" & r).Value = scs(n) & art
         Worksheets("test111").Range("B" & r).Value = 0
-        Worksheets("test111").Range("C" & r).Value = Worksheets("BOM").Range("C" & C_LOOK("SCF" & n))
-        Worksheets("test111").Range("D" & r).Value = Worksheets("BOM").cellS(C_LOOK("SCF" & n), 6)
+        Worksheets("test111").Range("C" & r).Value = Worksheets("BOM").Range("C" & C_LOOK("SCS" & n))
+        Worksheets("test111").Range("D" & r).Value = Worksheets("BOM").cellS(C_LOOK("SCS" & n), 6)
         Worksheets("test111").Range("H" & r).Value = 4
         
-        Worksheets("test111").Range("A" & r + 1).Value = scf(n) & art
+        Worksheets("test111").Range("A" & r + 1).Value = scs(n) & art
         Worksheets("test111").Range("B" & r + 1).Value = 1
         Worksheets("test111").Range("C" & r + 1).Value = "SLITT-OH"
         Worksheets("test111").Range("D" & r + 1).Value = 1
         Worksheets("test111").Range("H" & r + 1).Value = 290
         n = n + 1
         r = r + 2
+        Else:
+        MsgBox "SCS" & n & "  not defined"
+        j = 100
+        End If
+        
  End If
     Next j
 
@@ -539,9 +548,43 @@ Dim sc_count(5) As Integer
             sc_count(3) = 7
             sc_count(4) = 2
             sc_count(5) = 30
+        Case "1X3"
+            sc_count(0) = 10
+            sc_count(1) = 10
+            sc_count(2) = 10
+            sc_count(3) = 30
+            sc_count(4) = 0
+            sc_count(5) = 0
+        Case "11X13"
+            sc_count(0) = 12
+            sc_count(1) = 12
+            sc_count(2) = 12
+            sc_count(3) = 36
+            sc_count(4) = 0
+            sc_count(5) = 0
+        Case "8X10"
+            sc_count(0) = 12
+            sc_count(1) = 12
+            sc_count(2) = 12
+            sc_count(3) = 36
+            sc_count(4) = 0
+            sc_count(5) = 0
+        Case "11X12"
+            sc_count(0) = 6
+            sc_count(1) = 6
+            sc_count(2) = 12
+            sc_count(3) = 0
+            sc_count(4) = 0
+            sc_count(5) = 0
         Case Else
-            sc_count(0) = sc_count(1) = sc_count(2) = sc_count(3) = sc_count(4) = sc_count(5) = 0
+            sc_count(0) = 0
+            sc_count(1) = 0
+            sc_count(2) = 0
+            sc_count(3) = 0
+            sc_count(4) = 0
+            sc_count(5) = 0
     End Select
 MC_ITEMS = sc_count()
 End Function
+
 
