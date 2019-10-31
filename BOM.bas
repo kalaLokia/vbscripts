@@ -1,5 +1,5 @@
 Attribute VB_Name = "BOM"
-Sub BOM_LINE()
+Sub BOM()
 'test sample, requires "LINE" sheet to excecute
 
 
@@ -375,7 +375,7 @@ Dim cellX() As Long
             Worksheets("LINE").Range("A" & r + 1).Value = scf(0) & art
             Worksheets("LINE").Range("B" & r + 1).Value = 0
             Worksheets("LINE").Range("C" & r + 1).Value = Worksheets("BOM").Range("D" & C_LOOK("FCM", "C"))
-            Worksheets("LINE").Range("D" & r + 1).Value = Worksheets("BOM").cellS(C_LOOK("FCM", "C"), 11)
+            Worksheets("LINE").Range("D" & r + 1).Value = Worksheets("BOM").cellS(C_LOOK("FCM", "C"), 7 + siz)
             Worksheets("LINE").Range("H" & r + 1).Value = 4
         
             Worksheets("LINE").Range("A" & r + 2).Value = scf(0) & art
@@ -398,7 +398,7 @@ Dim cellX() As Long
             Worksheets("LINE").Range("A" & r + 1).Value = scf(1) & art
             Worksheets("LINE").Range("B" & r + 1).Value = 0
             Worksheets("LINE").Range("C" & r + 1).Value = Worksheets("BOM").Range("D" & C_LOOK("FCM1", "C"))
-            Worksheets("LINE").Range("D" & r + 1).Value = Worksheets("BOM").cellS(C_LOOK("FCM1", "C"), 11)
+            Worksheets("LINE").Range("D" & r + 1).Value = Worksheets("BOM").cellS(C_LOOK("FCM1", "C"), 7 + siz)
             Worksheets("LINE").Range("H" & r + 1).Value = 4
         
             Worksheets("LINE").Range("A" & r + 2).Value = scf(1) & art
@@ -423,7 +423,7 @@ Dim cellX() As Long
             Worksheets("LINE").Range("A" & r + 1).Value = scf(0) & art
             Worksheets("LINE").Range("B" & r + 1).Value = 0
             Worksheets("LINE").Range("C" & r + 1).Value = Worksheets("BOM").Range("D" & C_LOOK("FCS", "C"))
-            Worksheets("LINE").Range("D" & r + 1).Value = Worksheets("BOM").cellS(C_LOOK("FCS", "C"), 11)
+            Worksheets("LINE").Range("D" & r + 1).Value = Worksheets("BOM").cellS(C_LOOK("FCS", "C"), 7 + siz)
             Worksheets("LINE").Range("H" & r + 1).Value = 4
         
             Worksheets("LINE").Range("A" & r + 2).Value = scf(0) & art
@@ -445,7 +445,7 @@ Dim cellX() As Long
             Worksheets("LINE").Range("A" & r + 1).Value = scf(1) & art
             Worksheets("LINE").Range("B" & r + 1).Value = 0
             Worksheets("LINE").Range("C" & r + 1).Value = Worksheets("BOM").Range("D" & C_LOOK("FCS1", "C"))
-            Worksheets("LINE").Range("D" & r + 1).Value = Worksheets("BOM").cellS(C_LOOK("FCS1", "C"), 11)
+            Worksheets("LINE").Range("D" & r + 1).Value = Worksheets("BOM").cellS(C_LOOK("FCS1", "C"), 7 + siz)
             Worksheets("LINE").Range("H" & r + 1).Value = 4
         
             Worksheets("LINE").Range("A" & r + 2).Value = scf(1) & art
@@ -466,7 +466,7 @@ Dim cellX() As Long
             Worksheets("LINE").Range("A" & r).Value = scs(0) & art
             Worksheets("LINE").Range("B" & r).Value = 0
             Worksheets("LINE").Range("C" & r).Value = Worksheets("BOM").Range("D" & C_LOOK("SCS", "C"))
-            Worksheets("LINE").Range("D" & r).Value = Worksheets("BOM").cellS(C_LOOK("SCS", "C"), 11)
+            Worksheets("LINE").Range("D" & r).Value = Worksheets("BOM").cellS(C_LOOK("SCS", "C"), 7 + siz)
             Worksheets("LINE").Range("H" & r).Value = 4
             
             Worksheets("LINE").Range("A" & r + 1).Value = scs(0) & art
@@ -483,7 +483,7 @@ Dim cellX() As Long
             Worksheets("LINE").Range("A" & r).Value = scs(1) & art
             Worksheets("LINE").Range("B" & r).Value = 0
             Worksheets("LINE").Range("C" & r).Value = Worksheets("BOM").Range("D" & C_LOOK("SCS1", "C"))
-            Worksheets("LINE").Range("D" & r).Value = Worksheets("BOM").cellS(C_LOOK("SCS1", "C"), 11)
+            Worksheets("LINE").Range("D" & r).Value = Worksheets("BOM").cellS(C_LOOK("SCS1", "C"), 7 + siz)
             Worksheets("LINE").Range("H" & r).Value = 4
             
             Worksheets("LINE").Range("A" & r + 1).Value = scs(1) & art
@@ -499,7 +499,7 @@ Dim cellX() As Long
             Worksheets("LINE").Range("A" & r).Value = scs(2) & art
             Worksheets("LINE").Range("B" & r).Value = 0
             Worksheets("LINE").Range("C" & r).Value = Worksheets("BOM").Range("D" & C_LOOK("SCS2", "C"))
-            Worksheets("LINE").Range("D" & r).Value = Worksheets("BOM").cellS(C_LOOK("SCS2", "C"), 11)
+            Worksheets("LINE").Range("D" & r).Value = Worksheets("BOM").cellS(C_LOOK("SCS2", "C"), 7 + siz)
             Worksheets("LINE").Range("H" & r).Value = 4
             
             Worksheets("LINE").Range("A" & r + 1).Value = scs(2) & art
@@ -536,6 +536,71 @@ Dim cellX() As Long
     Worksheets("LINE").Range("G2").Value = "IssueMthd"
     Worksheets("LINE").Range("H1").Value = "Type"
     Worksheets("LINE").Range("H2").Value = "Type"
+    
+'CODE FOR TREE BEGINS IN HERE
+'Requires a sheet with name "TREE"
+Dim lastRow As Long
+r = 2
+lastRow = Worksheets("LINE").cellS(Rows.Count, 1).End(xlUp).Row
+For i = 3 To lastRow
+    If Worksheets("LINE").Range("A" & i) <> Worksheets("TREE").Range("A" & r) Then
+        r = r + 1
+        Worksheets("TREE").Range("A" & r).Value = Worksheets("LINE").Range("A" & i)
+        
+        If InStr(1, Worksheets("TREE").Range("A" & r), "2-FB-", vbTextCompare) > 0 Then
+           Worksheets("TREE").Range("E" & r).Value = "FG_MC"
+            Worksheets("TREE").Range("F" & r).Value = "Y"
+        ElseIf InStr(1, Worksheets("TREE").Range("A" & r), "3-FB-", vbTextCompare) > 0 Then
+            Worksheets("TREE").Range("E" & r).Value = "FG_SC"
+            Worksheets("TREE").Range("F" & r).Value = "Y"
+         ElseIf InStr(1, Worksheets("TREE").Range("A" & r), "4-MPU-", vbTextCompare) > 0 Then
+            Worksheets("TREE").Range("E" & r).Value = "MPU"
+            Worksheets("TREE").Range("F" & r).Value = "Y"
+        ElseIf InStr(1, Worksheets("TREE").Range("A" & r), "4-FU-", vbTextCompare) > 0 Then
+            Worksheets("TREE").Range("E" & r).Value = "STITCH"
+            Worksheets("TREE").Range("F" & r).Value = "Y"
+         ElseIf InStr(1, Worksheets("TREE").Range("A" & r), "4-PCS", vbTextCompare) > 0 Then
+            Worksheets("TREE").Range("E" & r).Value = "PRINT"
+            Worksheets("TREE").Range("F" & r).Value = "Y"
+        ElseIf InStr(1, Worksheets("TREE").Range("A" & r), "4-CC", vbTextCompare) > 0 Then
+            Worksheets("TREE").Range("E" & r).Value = "CLICK"
+            Worksheets("TREE").Range("F" & r).Value = "Y"
+        ElseIf InStr(1, Worksheets("TREE").Range("A" & r), "4-MCS-", vbTextCompare) > 0 Then
+            Worksheets("TREE").Range("E" & r).Value = "MARK"
+            Worksheets("TREE").Range("F" & r).Value = "Y"
+        ElseIf InStr(1, Worksheets("TREE").Range("A" & r), "4-FC", vbTextCompare) > 0 Then
+            Worksheets("TREE").Range("E" & r).Value = "FOLD"
+            Worksheets("TREE").Range("F" & r).Value = "N"
+        ElseIf InStr(1, Worksheets("TREE").Range("A" & r), "4-SC", vbTextCompare) > 0 Then
+            Worksheets("TREE").Range("E" & r).Value = "SLITT"
+            Worksheets("TREE").Range("F" & r).Value = "Y"
+        End If
+    End If
+Next i
+
+lastRow = Worksheets("TREE").cellS(Rows.Count, 1).End(xlUp).Row
+    Set rng = Worksheets("TREE").Range("B3:B" & lastRow)
+    rng.Value = "P"
+
+    Set rng = Worksheets("TREE").Range("C3:C" & lastRow)
+    rng.Value = "1"
+    
+    Set rng = Worksheets("TREE").Range("D3:D" & lastRow)
+    rng.Value = "FB/PF001"
+    
+    
+    Worksheets("TREE").Range("A1").Value = "TreeCode"
+    Worksheets("TREE").Range("B1").Value = "TreeType"
+    Worksheets("TREE").Range("C1").Value = "Quantity"
+    Worksheets("TREE").Range("D1").Value = "Warehouse"
+    Worksheets("TREE").Range("E1").Value = "U_ProcessType"
+    Worksheets("TREE").Range("F1").Value = "U_OhApp"
+    Worksheets("TREE").Range("A2").Value = "Code"
+    Worksheets("TREE").Range("B2").Value = "TreeType"
+    Worksheets("TREE").Range("C2").Value = "Qauntity"
+    Worksheets("TREE").Range("D2").Value = "ToWH"
+    Worksheets("TREE").Range("E2").Value = "U_ProcessType"
+    Worksheets("TREE").Range("F2").Value = "U_OhApp"
 
 
 End Sub
