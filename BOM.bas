@@ -69,7 +69,7 @@ Dim cellX() As Long
     Next j
     r = r + n
     Worksheets("LINE").Range("B" & r).Value = i + n
-    Worksheets("LINE").Range("C" & r).Value = "FGMC_OH"
+    Worksheets("LINE").Range("C" & r).Value = "FGMC-OH"
     Worksheets("LINE").Range("D" & r).Value = scCount(i)
     Worksheets("LINE").Range("H" & r).Value = 290
     r = r + 1
@@ -93,7 +93,7 @@ Dim cellX() As Long
         Next j
     
         Worksheets("LINE").Range("B" & r + n + 1).Value = n + 1
-        Worksheets("LINE").Range("C" & r + n + 1).Value = "FGSC_OH"
+        Worksheets("LINE").Range("C" & r + n + 1).Value = "FGSC-OH"
         Worksheets("LINE").Range("D" & r + n + 1).Value = 1
         Worksheets("LINE").Range("H" & r + n + 1).Value = 290
 
@@ -119,7 +119,7 @@ Dim cellX() As Long
         
         Worksheets("LINE").Range("A" & r + 2).Value = mpu & art & WorksheetFunction.Text(s1 + i, "00")
         Worksheets("LINE").Range("B" & r + 2).Value = 2
-        Worksheets("LINE").Range("C" & r + 2).Value = "MPU_OH"
+        Worksheets("LINE").Range("C" & r + 2).Value = "MPU-OH"
         Worksheets("LINE").Range("D" & r + 2).Value = 1
         Worksheets("LINE").Range("H" & r + 2).Value = 290
         r = r + 3
@@ -262,7 +262,7 @@ Dim cellX() As Long
             Next j
     
             Worksheets("LINE").Range("B" & r + n).Value = n
-            Worksheets("LINE").Range("C" & r + n).Value = "CLICK_OH"
+            Worksheets("LINE").Range("C" & r + n).Value = "CLICK-OH"
             Worksheets("LINE").Range("D" & r + n).Value = 1
             Worksheets("LINE").Range("H" & r + n).Value = 290
 
@@ -303,7 +303,7 @@ Dim cellX() As Long
             Next j
     
             Worksheets("LINE").Range("B" & r + n).Value = n
-            Worksheets("LINE").Range("C" & r + n).Value = "CLICK_OH"
+            Worksheets("LINE").Range("C" & r + n).Value = "CLICK-OH"
             Worksheets("LINE").Range("D" & r + n).Value = 1
             Worksheets("LINE").Range("H" & r + n).Value = 290
 
@@ -329,7 +329,7 @@ Dim cellX() As Long
             Next j
     
             Worksheets("LINE").Range("B" & r + n).Value = n
-            Worksheets("LINE").Range("C" & r + n).Value = "CLICK_OH"
+            Worksheets("LINE").Range("C" & r + n).Value = "CLICK-OH"
             Worksheets("LINE").Range("D" & r + n).Value = 1
             Worksheets("LINE").Range("H" & r + n).Value = 290
 
@@ -572,7 +572,7 @@ For i = 3 To lastRow
             Worksheets("TREE").Range("E" & r).Value = "FOLD"
             Worksheets("TREE").Range("F" & r).Value = "N"
         ElseIf InStr(1, Worksheets("TREE").Range("A" & r), "4-SC", vbTextCompare) > 0 Then
-            Worksheets("TREE").Range("E" & r).Value = "SLITT"
+            Worksheets("TREE").Range("E" & r).Value = "SLIT"
             Worksheets("TREE").Range("F" & r).Value = "Y"
         End If
     End If
