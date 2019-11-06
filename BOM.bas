@@ -1,6 +1,6 @@
 Attribute VB_Name = "BOM"
 Sub BOM()
-'test sample, requires "LINE" sheet to excecute
+'TEST SAMPLE, requires "LINE" & "TREE" sheet to excecute
 
 
 Dim artNo, artColor, artCat, s2, s1, brandSize As String
@@ -42,15 +42,20 @@ s1 = SIZE1(Worksheets("BOM").Range("D7"))
 s2 = SIZE2(Worksheets("BOM").Range("D7"))
 siz = s2 - s1
 art = artNo & "-" & artColor & "-" & artCat
-brandSize = Worksheets("BOM").Range("D7")
+If InStr(1, artNo, "Z", vbTextCompare) > 0 Then
+        brandSize = Worksheets("BOM").Range("D7") & "Z"
+Else
+        brandSize = Worksheets("BOM").Range("D7")
+End If
 scCount = MC_ITEMS(brandSize) 'small carton counts in mc
 Dim cellX() As Long
 
 'Master Carton - MC
+If C_LOOK("MC", "B") > 0 Then
     cellX = CELL_X("MC")
 
     Set rng = Worksheets("LINE").Range("A" & r & ":A" & cellX(1) + siz + r + 1)
-    rng.Value = mc & art & 1
+    rng.Value = mc & art & scCount(6)
     For i = 0 To siz
         Worksheets("LINE").Range("B" & r + i).Value = i
         Worksheets("LINE").Range("C" & r + i).Value = sc & art & WorksheetFunction.Text(s1 + i, "00")
@@ -73,9 +78,13 @@ Dim cellX() As Long
     Worksheets("LINE").Range("D" & r).Value = scCount(i)
     Worksheets("LINE").Range("H" & r).Value = 290
     r = r + 1
+    End If
 'Small Carton - SC
+If C_LOOK("SC", "B") > 0 Then
     cellX = CELL_X("SC")
     For i = 0 To siz
+    Set rng = Worksheets("LINE").Range("A" & r & ":A" & cellX(1) + r + 1)
+        rng.Value = sc & art & WorksheetFunction.Text(s1 + i, "00")
         n = 0
         Worksheets("LINE").Range("B" & r).Value = n
         Worksheets("LINE").Range("C" & r).Value = mpu & art & WorksheetFunction.Text(s1 + i, "00")
@@ -97,13 +106,13 @@ Dim cellX() As Long
         Worksheets("LINE").Range("D" & r + n + 1).Value = 1
         Worksheets("LINE").Range("H" & r + n + 1).Value = 290
 
-        Set rng = Worksheets("LINE").Range("A" & r & ":A" & cellX(1) + siz + r + 2)
-        rng.Value = sc & art & WorksheetFunction.Text(s1 + i, "00")
+        
         r = r + n + 2
     Next i
-
+End If
 'MPU
-    cellX = CELL_X("SW")
+If C_LOOK("MPU", "B") > 0 Then
+    cellX = CELL_X("MPU")
     For i = 0 To siz
         Worksheets("LINE").Range("A" & r).Value = mpu & art & WorksheetFunction.Text(s1 + i, "00")
         Worksheets("LINE").Range("B" & r).Value = 0
@@ -113,19 +122,32 @@ Dim cellX() As Long
     
         Worksheets("LINE").Range("A" & r + 1).Value = mpu & art & WorksheetFunction.Text(s1 + i, "00")
         Worksheets("LINE").Range("B" & r + 1).Value = 1
-        Worksheets("LINE").Range("C" & r + 1).Value = "4-PUX-0003"
+        Worksheets("LINE").Range("C" & r + 1).Value = "4-PUX-0004"
         Worksheets("LINE").Range("D" & r + 1).Value = Worksheets("BOM").cellS(cellX(0), i + 6)
         Worksheets("LINE").Range("H" & r + 1).Value = 4
         
         Worksheets("LINE").Range("A" & r + 2).Value = mpu & art & WorksheetFunction.Text(s1 + i, "00")
         Worksheets("LINE").Range("B" & r + 2).Value = 2
-        Worksheets("LINE").Range("C" & r + 2).Value = "MPU-OH"
-        Worksheets("LINE").Range("D" & r + 2).Value = 1
-        Worksheets("LINE").Range("H" & r + 2).Value = 290
-        r = r + 3
+        Worksheets("LINE").Range("C" & r + 2).Value = "6-ADH-0029"
+        Worksheets("LINE").Range("D" & r + 2).Value = 0.0003
+        Worksheets("LINE").Range("H" & r + 2).Value = 4
+        
+        Worksheets("LINE").Range("A" & r + 3).Value = mpu & art & WorksheetFunction.Text(s1 + i, "00")
+        Worksheets("LINE").Range("B" & r + 3).Value = 3
+        Worksheets("LINE").Range("C" & r + 3).Value = "6-CHM-0126"
+        Worksheets("LINE").Range("D" & r + 3).Value = 0.0008
+        Worksheets("LINE").Range("H" & r + 3).Value = 4
+        
+        Worksheets("LINE").Range("A" & r + 4).Value = mpu & art & WorksheetFunction.Text(s1 + i, "00")
+        Worksheets("LINE").Range("B" & r + 4).Value = 4
+        Worksheets("LINE").Range("C" & r + 4).Value = "MPU-OH"
+        Worksheets("LINE").Range("D" & r + 4).Value = 1
+        Worksheets("LINE").Range("H" & r + 4).Value = 290
+        r = r + 5
     Next i
-
+End If
 'FU
+If C_LOOK("FU", "B") > 0 Then
     cellX = CELL_X("FU")
     Let x = r
     For i = 0 To siz
@@ -230,7 +252,7 @@ Dim cellX() As Long
         rng.Value = fu & art & WorksheetFunction.Text(s1 + i, "00")
         x = r
     Next i
-
+End If
 'PCS n CCP
     If C_LOOK("CCP", "B") > 0 Then
         cellX = CELL_X("CCP")
@@ -255,7 +277,7 @@ Dim cellX() As Long
                 If IsEmpty(Worksheets("BOM").Range("D" & cellX(0) + j).Value) = False Then
                     Worksheets("LINE").Range("B" & r + n).Value = n
                     Worksheets("LINE").Range("C" & r + n).Value = Worksheets("BOM").Range("D" & cellX(0) + j)
-                    Worksheets("LINE").Range("D" & r + n).Value = Worksheets("BOM").cellS(cellX(0) + j, 6)
+                    Worksheets("LINE").Range("D" & r + n).Value = Worksheets("BOM").cellS(cellX(0) + j, 6 + i)
                     Worksheets("LINE").Range("H" & r + n).Value = 4
                     n = n + 1
                 End If
@@ -296,7 +318,7 @@ Dim cellX() As Long
                 If IsEmpty(Worksheets("BOM").Range("D" & cellX(0) + j).Value) = False Then
                     Worksheets("LINE").Range("B" & r + n).Value = n
                     Worksheets("LINE").Range("C" & r + n).Value = Worksheets("BOM").Range("D" & cellX(0) + j)
-                    Worksheets("LINE").Range("D" & r + n).Value = Worksheets("BOM").cellS(cellX(0) + j, 6)
+                    Worksheets("LINE").Range("D" & r + n).Value = Worksheets("BOM").cellS(cellX(0) + j, 6 + i)
                     Worksheets("LINE").Range("H" & r + n).Value = 4
                     n = n + 1
                 End If
@@ -322,7 +344,7 @@ Dim cellX() As Long
                 If IsEmpty(Worksheets("BOM").Range("D" & cellX(0) + j).Value) = False Then
                     Worksheets("LINE").Range("B" & r + n).Value = n
                     Worksheets("LINE").Range("C" & r + n).Value = Worksheets("BOM").Range("D" & cellX(0) + j)
-                    Worksheets("LINE").Range("D" & r + n).Value = Worksheets("BOM").cellS(cellX(0) + j, 6)
+                    Worksheets("LINE").Range("D" & r + n).Value = Worksheets("BOM").cellS(cellX(0) + j, 6 + i)
                     Worksheets("LINE").Range("H" & r + n).Value = 4
                     n = n + 1
                 End If
@@ -664,17 +686,27 @@ Function C_LOOK(lookUpValue As String, colmnName As String)
 End Function
 
 Function MC_ITEMS(sizee As String) As Integer()
-    Dim sc_count(5) As Integer
+    Dim sc_count(6) As Integer
         
         Select Case sizee
             Case "6X10"
-            'todo
                 sc_count(0) = 3
                 sc_count(4) = 3
                 sc_count(1) = 6
                 sc_count(2) = 6
                 sc_count(3) = 6
                 sc_count(5) = 24
+                sc_count(6) = 1
+                    
+            Case "6X10Z"
+                sc_count(0) = 2
+                sc_count(1) = 2
+                sc_count(2) = 3
+                sc_count(3) = 3
+                sc_count(4) = 2
+                sc_count(5) = 12
+                sc_count(6) = 1
+                
             Case "5X9"
                 sc_count(0) = 7
                 sc_count(1) = 7
@@ -682,6 +714,15 @@ Function MC_ITEMS(sizee As String) As Integer()
                 sc_count(3) = 7
                 sc_count(4) = 2
                 sc_count(5) = 30
+                sc_count(6) = 1
+            Case "5X8"
+                sc_count(0) = 8
+                sc_count(1) = 8
+                sc_count(2) = 7
+                sc_count(3) = 7
+                sc_count(4) = 30
+                sc_count(5) = 0
+                sc_count(6) = 2
             Case "1X3"
                 sc_count(0) = 10
                 sc_count(1) = 10
@@ -689,6 +730,7 @@ Function MC_ITEMS(sizee As String) As Integer()
                 sc_count(3) = 30
                 sc_count(4) = 0
                 sc_count(5) = 0
+                sc_count(6) = 2
             Case "1X5"
                 sc_count(0) = 6
                 sc_count(1) = 6
@@ -696,6 +738,7 @@ Function MC_ITEMS(sizee As String) As Integer()
                 sc_count(3) = 6
                 sc_count(4) = 6
                 sc_count(5) = 30
+                sc_count(6) = 1
             Case "11X13"
                 sc_count(0) = 12
                 sc_count(1) = 12
@@ -703,6 +746,7 @@ Function MC_ITEMS(sizee As String) As Integer()
                 sc_count(3) = 36
                 sc_count(4) = 0
                 sc_count(5) = 0
+                sc_count(6) = 1
             Case "8X10"
                 sc_count(0) = 12
                 sc_count(1) = 12
@@ -710,6 +754,7 @@ Function MC_ITEMS(sizee As String) As Integer()
                 sc_count(3) = 36
                 sc_count(4) = 0
                 sc_count(5) = 0
+                sc_count(6) = 4
             Case "11X12"
                 sc_count(0) = 6
                 sc_count(1) = 6
@@ -717,6 +762,7 @@ Function MC_ITEMS(sizee As String) As Integer()
                 sc_count(3) = 0
                 sc_count(4) = 0
                 sc_count(5) = 0
+                sc_count(6) = 1
             Case Else
                 sc_count(0) = 0
                 sc_count(1) = 0
@@ -724,6 +770,7 @@ Function MC_ITEMS(sizee As String) As Integer()
                 sc_count(3) = 0
                 sc_count(4) = 0
                 sc_count(5) = 0
+                sc_count(6) = 0
         End Select
     MC_ITEMS = sc_count()
 End Function
