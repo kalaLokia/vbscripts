@@ -114,6 +114,7 @@ End If
 If C_LOOK("MPU", "B") > 0 Then
     cellX = CELL_X("MPU")
     For i = 0 To siz
+        n = 2
         Worksheets("LINE").Range("A" & r).Value = mpu & art & WorksheetFunction.Text(s1 + i, "00")
         Worksheets("LINE").Range("B" & r).Value = 0
         Worksheets("LINE").Range("C" & r).Value = fu & art & WorksheetFunction.Text(s1 + i, "00")
@@ -125,25 +126,40 @@ If C_LOOK("MPU", "B") > 0 Then
         Worksheets("LINE").Range("C" & r + 1).Value = "4-PUX-0004"
         Worksheets("LINE").Range("D" & r + 1).Value = Worksheets("BOM").cellS(cellX(0), i + 6)
         Worksheets("LINE").Range("H" & r + 1).Value = 4
+        If C_LOOK("SOFT", "C") > 0 Then
+            Worksheets("LINE").Range("A" & r + n).Value = mpu & art & WorksheetFunction.Text(s1 + i, "00")
+            Worksheets("LINE").Range("B" & r + n).Value = n
+            Worksheets("LINE").Range("C" & r + n).Value = "5-PO01-0018"
+            Worksheets("LINE").Range("D" & r + n).Value = Worksheets("BOM").cellS(C_LOOK("SOFT", "C"), i + 6) * 34 / 134
+            Worksheets("LINE").Range("H" & r + 1).Value = 4
+            
+            Worksheets("LINE").Range("A" & r + n + 1).Value = mpu & art & WorksheetFunction.Text(s1 + i, "00")
+            Worksheets("LINE").Range("B" & r + n + 1).Value = n + 1
+            Worksheets("LINE").Range("C" & r + n + 1).Value = "5-PO01-0004"
+            Worksheets("LINE").Range("D" & r + n + 1).Value = Worksheets("BOM").cellS(C_LOOK("SOFT", "C"), i + 6) - (Worksheets("BOM").cellS(C_LOOK("SOFT", "C"), i + 6) * 34 / 134)
+            Worksheets("LINE").Range("H" & r + n + 1).Value = 4
+            n = n + 2
+        End If
         
-        Worksheets("LINE").Range("A" & r + 2).Value = mpu & art & WorksheetFunction.Text(s1 + i, "00")
-        Worksheets("LINE").Range("B" & r + 2).Value = 2
-        Worksheets("LINE").Range("C" & r + 2).Value = "6-ADH-0029"
-        Worksheets("LINE").Range("D" & r + 2).Value = 0.0003
-        Worksheets("LINE").Range("H" & r + 2).Value = 4
         
-        Worksheets("LINE").Range("A" & r + 3).Value = mpu & art & WorksheetFunction.Text(s1 + i, "00")
-        Worksheets("LINE").Range("B" & r + 3).Value = 3
-        Worksheets("LINE").Range("C" & r + 3).Value = "6-CHM-0126"
-        Worksheets("LINE").Range("D" & r + 3).Value = 0.0008
-        Worksheets("LINE").Range("H" & r + 3).Value = 4
+        Worksheets("LINE").Range("A" & r + n).Value = mpu & art & WorksheetFunction.Text(s1 + i, "00")
+        Worksheets("LINE").Range("B" & r + n).Value = n
+        Worksheets("LINE").Range("C" & r + n).Value = "6-ADH-0029"
+        Worksheets("LINE").Range("D" & r + n).Value = 0.0003
+        Worksheets("LINE").Range("H" & r + n).Value = 4
         
-        Worksheets("LINE").Range("A" & r + 4).Value = mpu & art & WorksheetFunction.Text(s1 + i, "00")
-        Worksheets("LINE").Range("B" & r + 4).Value = 4
-        Worksheets("LINE").Range("C" & r + 4).Value = "MPU-OH"
-        Worksheets("LINE").Range("D" & r + 4).Value = 1
-        Worksheets("LINE").Range("H" & r + 4).Value = 290
-        r = r + 5
+        Worksheets("LINE").Range("A" & r + n + 1).Value = mpu & art & WorksheetFunction.Text(s1 + i, "00")
+        Worksheets("LINE").Range("B" & r + n + 1).Value = n + 1
+        Worksheets("LINE").Range("C" & r + n + 1).Value = "6-CHM-0126"
+        Worksheets("LINE").Range("D" & r + n + 1).Value = 0.0008
+        Worksheets("LINE").Range("H" & r + n + 1).Value = 4
+        
+        Worksheets("LINE").Range("A" & r + n + 2).Value = mpu & art & WorksheetFunction.Text(s1 + i, "00")
+        Worksheets("LINE").Range("B" & r + n + 2).Value = n + 2
+        Worksheets("LINE").Range("C" & r + n + 2).Value = "MPU-OH"
+        Worksheets("LINE").Range("D" & r + n + 2).Value = 1
+        Worksheets("LINE").Range("H" & r + n + 2).Value = 290
+        r = r + n + 3
     Next i
 End If
 'FU
@@ -366,15 +382,27 @@ End If
         cellX = CELL_X("MARK")
         For i = 0 To siz
             n = 0
-            For j = 0 To cellX(1) - 1
-                If IsEmpty(Worksheets("BOM").Range("C" & cellX(0) + j).Value) = False Then
+                If C_LOOK("FCM", "C") > 0 Then
                     Worksheets("LINE").Range("B" & r + n).Value = n
-                    Worksheets("LINE").Range("C" & r + n).Value = "4-" & Worksheets("BOM").Range("C" & cellX(0) + j) & "-" & art
-                    Worksheets("LINE").Range("D" & r + n).Value = Worksheets("BOM").cellS(cellX(0) + j, 6)
+                    Worksheets("LINE").Range("C" & r + n).Value = fcm(0) & art
+                    Worksheets("LINE").Range("D" & r + n).Value = Worksheets("BOM").cellS(C_LOOK("FCM", "C"), i + 6)
                     Worksheets("LINE").Range("H" & r + n).Value = 4
                     n = n + 1
                 End If
-            Next j
+                If C_LOOK("FCM1", "C") > 0 Then
+                    Worksheets("LINE").Range("B" & r + n).Value = n
+                    Worksheets("LINE").Range("C" & r + n).Value = fcm(1) & art
+                    Worksheets("LINE").Range("D" & r + n).Value = Worksheets("BOM").cellS(C_LOOK("FCM1", "C"), i + 6)
+                    Worksheets("LINE").Range("H" & r + n).Value = 4
+                    n = n + 1
+                End If
+                If C_LOOK("FCM2", "C") > 0 Then
+                    Worksheets("LINE").Range("B" & r + n).Value = n
+                    Worksheets("LINE").Range("C" & r + n).Value = fcm(2) & art
+                    Worksheets("LINE").Range("D" & r + n).Value = Worksheets("BOM").cellS(C_LOOK("FCM2", "C"), i + 6)
+                    Worksheets("LINE").Range("H" & r + n).Value = 4
+                    n = n + 1
+                End If
     
             Worksheets("LINE").Range("B" & r + n).Value = n
             Worksheets("LINE").Range("C" & r + n).Value = "MARKING-CHARGES"
