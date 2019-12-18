@@ -75,11 +75,22 @@ scCount = MC_ITEMS(brandSize) 'small carton counts in mc
     End If
     
      If C_LOOK("FU", "B") > 0 Then
-        FINSHED_UPPER "4-fu-" & article
+        FINISHED_UPPER "4-fu-" & article
     End If
-
-
-
+    If C_LOOK("CCP", "B") > 0 Then
+        PRINTING_UPPER "4-pcs-" & article
+        CLICKING_UPPER "4-ccp-" & article
+    End If
+    If C_LOOK("CCP1", "B") > 0 Then
+        PRINTING_UPPER "4-pcs1-" & article
+        CLICKING_UPPER "4-ccp1-" & article
+    End If
+    If C_LOOK("CCS", "B") > 0 Then
+        CLICKING_UPPER "4-ccs-" & article
+    End If
+    If C_LOOK("FCM", "B") > 0 Then
+        MARKING_UPPER "4-mcs-" & article
+    End If
 
 End Sub
 'Master Carton - MC
@@ -120,7 +131,7 @@ Sub MOULDED_PU(ite As String)
         itemCount = 0
         LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-fu-" & article & WorksheetFunction.Text(artSize(0) + i, "00"), 1, 4
         LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-PUX-0004", Worksheets("BOM").cellS(cellX(0), i + 6), 4
-        
+       
         If C_LOOK("SOFT", "C") > 0 Then
             LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "5-PO01-0018", Worksheets("BOM").cellS(C_LOOK("SOFT", "C"), i + 6) * 34 / 134, 4
             LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "5-PO01-0004", Worksheets("BOM").cellS(C_LOOK("SOFT", "C"), i + 6) - (Worksheets("BOM").cellS(C_LOOK("SOFT", "C"), i + 6) * 34 / 134), 4
@@ -132,113 +143,269 @@ Sub MOULDED_PU(ite As String)
     Next i
 End Sub
 
+'Finished Upper - FU
 Sub FINISHED_UPPER(ite As String)
    cellX = CELL_X("FU")
-    Let x = r
-    For i = 0 To siz
-        n = 0
-        If C_LOOK("CCP", "B") > 0 Then
-            Worksheets("LINE").Range("B" & r + n).Value = n
-            Worksheets("LINE").Range("C" & r + n).Value = pcs & art & WorksheetFunction.Text(s1 + i, "00")
-            Worksheets("LINE").Range("D" & r + n).Value = 1
-            Worksheets("LINE").Range("H" & r + n).Value = 4
-            n = n + 1
-        End If
-        If C_LOOK("CCP1", "B") > 0 Then
-            Worksheets("LINE").Range("B" & r + n).Value = n
-            Worksheets("LINE").Range("C" & r + n).Value = pcs1 & art & WorksheetFunction.Text(s1 + i, "00")
-            Worksheets("LINE").Range("D" & r + n).Value = 1
-            Worksheets("LINE").Range("H" & r + n).Value = 4
-            n = n + 1
-        End If
-        If C_LOOK("CCS", "B") > 0 Then
-            Worksheets("LINE").Range("B" & r + n).Value = n
-            Worksheets("LINE").Range("C" & r + n).Value = ccs & art & WorksheetFunction.Text(s1 + i, "00")
-            Worksheets("LINE").Range("D" & r + n).Value = 1
-            Worksheets("LINE").Range("H" & r + n).Value = 4
-            n = n + 1
-        End If
-        If C_LOOK("MARK", "B") > 0 Then
-            Worksheets("LINE").Range("B" & r + n).Value = n
-            Worksheets("LINE").Range("C" & r + n).Value = mcs & art & WorksheetFunction.Text(s1 + i, "00")
-            Worksheets("LINE").Range("D" & r + n).Value = 1
-            Worksheets("LINE").Range("H" & r + n).Value = 4
-            n = n + 1
-        End If
-
-        If C_LOOK("FOLD", "B") > 0 Then
-            If C_LOOK("FCS", "C") > 0 Then
-                Worksheets("LINE").Range("B" & r + n).Value = n
-                Worksheets("LINE").Range("C" & r + n).Value = fcs(0) & art
-                Worksheets("LINE").Range("D" & r + n).Value = Worksheets("BOM").cellS(C_LOOK("FCS", "C"), i + 6)
-                Worksheets("LINE").Range("H" & r + n).Value = 4
-                n = n + 1
-            End If
-            If C_LOOK("FCS1", "C") > 0 Then
-                Worksheets("LINE").Range("B" & r + n).Value = n
-                Worksheets("LINE").Range("C" & r + n).Value = fcs(1) & art
-                Worksheets("LINE").Range("D" & r + n).Value = Worksheets("BOM").cellS(C_LOOK("FCS1", "C"), i + 6)
-                Worksheets("LINE").Range("H" & r + n).Value = 4
-                n = n + 1
-            End If
-            If C_LOOK("FCS2", "C") > 0 Then
-                Worksheets("LINE").Range("B" & r + n).Value = n
-                Worksheets("LINE").Range("C" & r + n).Value = fcs(2) & art
-                Worksheets("LINE").Range("D" & r + n).Value = Worksheets("BOM").cellS(C_LOOK("FCS2", "C"), i + 6)
-                Worksheets("LINE").Range("H" & r + n).Value = 4
-                n = n + 1
-            End If
-        End If
-  
-        If C_LOOK("SLIT", "B") > 0 Then
-            If C_LOOK("SCS", "C") > 0 Then
-                Worksheets("LINE").Range("B" & r + n).Value = n
-                Worksheets("LINE").Range("C" & r + n).Value = scs(0) & art
-                Worksheets("LINE").Range("D" & r + n).Value = Worksheets("BOM").cellS(C_LOOK("SCS", "C"), i + 6)
-                Worksheets("LINE").Range("H" & r + n).Value = 4
-                n = n + 1
-            End If
-            If C_LOOK("SCS1", "C") > 0 Then
-                Worksheets("LINE").Range("B" & r + n).Value = n
-                Worksheets("LINE").Range("C" & r + n).Value = scs(1) & art
-                Worksheets("LINE").Range("D" & r + n).Value = Worksheets("BOM").cellS(C_LOOK("SCS1", "C"), i + 6)
-                Worksheets("LINE").Range("H" & r + n).Value = 4
-                n = n + 1
-            End If
-            If C_LOOK("SCS2", "C") > 0 Then
-                Worksheets("LINE").Range("B" & r + n).Value = n
-                Worksheets("LINE").Range("C" & r + n).Value = scs(2) & art
-                Worksheets("LINE").Range("D" & r + n).Value = Worksheets("BOM").cellS(C_LOOK("SCS2", "C"), i + 6)
-                Worksheets("LINE").Range("H" & r + n).Value = 4
-                n = n + 1
-            End If
-        End If
     
+    For i = 0 To siz
+    itemCount = 0
+    If C_LOOK("CCP", "B") > 0 Then
+        If UCase(Worksheets("BOM").Range("A" & C_LOOK("CCP", "B"))) <> "M" Then
+            LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-pcs-" & article & WorksheetFunction.Text(artSize(0) + i, "00"), 1, 4
+        End If
+    End If
+    If C_LOOK("CCP1", "B") > 0 Then
+        If UCase(Worksheets("BOM").Range("A" & C_LOOK("CCP1", "B"))) <> "M" Then
+            LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-pcs1-" & article & WorksheetFunction.Text(artSize(0) + i, "00"), 1, 4
+        End If
+    End If
+      
+    If C_LOOK("CCS", "B") > 0 Then
+        LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-ccs-" & article & WorksheetFunction.Text(artSize(0) + i, "00"), 1, 4
+    End If
+    If C_LOOK("FCM", "B") > 0 Then
+        If UCase(Worksheets("BOM").Range("A" & C_LOOK("FCM", "B"))) <> "P" Then
+            LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-mcs-" & article & WorksheetFunction.Text(artSize(0) + i, "00"), 1, 4
+        End If
+    End If
+    If C_LOOK("FCS", "B") > 0 Then
+        If UCase(Worksheets("BOM").Range("A" & C_LOOK("FCS", "B"))) <> "P" Then
+            LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-fcs-" & article, Worksheets("BOM").cellS(C_LOOK("FCS", "B"), i + 6), 4
+        End If
+    End If
+    If C_LOOK("FCS1", "B") > 0 Then
+        If UCase(Worksheets("BOM").Range("A" & C_LOOK("FCS1", "B"))) <> "P" Then
+            LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-fcs1-" & article, Worksheets("BOM").cellS(C_LOOK("FCS1", "B"), i + 6), 4
+        End If
+    End If
+    If C_LOOK("FCS2", "B") > 0 Then
+        If UCase(Worksheets("BOM").Range("A" & C_LOOK("FCS2", "B"))) <> "P" Then
+            LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-fcs2-" & article, Worksheets("BOM").cellS(C_LOOK("FCS2", "B"), i + 6), 4
+        End If
+    End If
+    If C_LOOK("SCS", "B") > 0 Then
+        If UCase(Worksheets("BOM").Range("A" & C_LOOK("SCS", "B"))) <> "P" Then
+            LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-scs-" & article, Worksheets("BOM").cellS(C_LOOK("SCS", "B"), i + 6), 4
+        End If
+    End If
+    If C_LOOK("SCS1", "B") > 0 Then
+        If UCase(Worksheets("BOM").Range("A" & C_LOOK("SCS1", "B"))) <> "P" Then
+            LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-scs1-" & article, Worksheets("BOM").cellS(C_LOOK("SCS1", "B"), i + 6), 4
+        End If
+    End If
+    If C_LOOK("SCS2", "B") > 0 Then
+        If UCase(Worksheets("BOM").Range("A" & C_LOOK("SCS2", "B"))) <> "P" Then
+            LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-scs2-" & article, Worksheets("BOM").cellS(C_LOOK("SCS2", "B"), i + 6), 4
+        End If
+    End If
+            
         For j = 0 To cellX(1) - 1
             If IsEmpty(Worksheets("BOM").Range("D" & cellX(0) + j).Value) = False Then
-                Worksheets("LINE").Range("B" & r + n).Value = n
-                Worksheets("LINE").Range("C" & r + n).Value = Worksheets("BOM").Range("D" & cellX(0) + j)
-                Worksheets("LINE").Range("D" & r + n).Value = Worksheets("BOM").cellS(cellX(0) + j, i + 6)
-                Worksheets("LINE").Range("H" & r + n).Value = 4
-                n = n + 1
+                LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, Worksheets("BOM").Range("D" & cellX(0) + j), Worksheets("BOM").cellS(cellX(0) + j, i + 6), 4
             End If
         Next j
-        r = r + n
-        Worksheets("LINE").Range("B" & r).Value = n
-        Worksheets("LINE").Range("C" & r).Value = "STITCHING-CHARGES"
-        Worksheets("LINE").Range("B" & r + 1).Value = n + 1
-        Worksheets("LINE").Range("C" & r + 1).Value = "STITCH-OH"
-        Worksheets("LINE").Range("D" & r).Value = 1
-        Worksheets("LINE").Range("D" & r + 1).Value = 1
-        Worksheets("LINE").Range("H" & r).Value = 290
-        Worksheets("LINE").Range("H" & r + 1).Value = 290
-        r = r + 2
-        Set rng = Worksheets("LINE").Range("A" & x & ":A" & r - 1)
-        rng.Value = fu & art & WorksheetFunction.Text(s1 + i, "00")
-        x = r
+        LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "STITCHING-CHARGES", 1, 290
+        LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "STITCH-OH", 1, 290
+          
+        row_count = row_count + itemCount
     Next i
 
 End Sub
+
+'Printing Upper - PCS
+Sub PRINTING_UPPER(ite As String)
+    
+    For i = 0 To siz
+    itemCount = 0
+    If C_LOOK("CCP", "B") > 0 Then
+        If UCase(Worksheets("BOM").Range("A" & C_LOOK("CCP", "B"))) <> "M" Then
+            LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-ccp-" & article & WorksheetFunction.Text(artSize(0) + i, "00"), 1, 4
+        End If
+    End If
+     If C_LOOK("FCM", "B") > 0 Then
+        If UCase(Worksheets("BOM").Range("A" & C_LOOK("FCM", "B"))) = "P" Then
+            LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-mcs-" & article & WorksheetFunction.Text(artSize(0) + i, "00"), 1, 4
+        End If
+    End If
+    If C_LOOK("FCS", "B") > 0 Then
+        If UCase(Worksheets("BOM").Range("A" & C_LOOK("FCS", "B"))) = "P" Then
+            LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-fcs-" & article, Worksheets("BOM").cellS(C_LOOK("FCS", "B"), i + 6), 4
+        End If
+    End If
+    If C_LOOK("FCS1", "B") > 0 Then
+        If UCase(Worksheets("BOM").Range("A" & C_LOOK("FCS1", "B"))) = "P" Then
+            LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-fcs1-" & article, Worksheets("BOM").cellS(C_LOOK("FCS1", "B"), i + 6), 4
+        End If
+    End If
+    If C_LOOK("FCS2", "B") > 0 Then
+        If UCase(Worksheets("BOM").Range("A" & C_LOOK("FCS2", "B"))) = "P" Then
+            LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-fcs2-" & article, Worksheets("BOM").cellS(C_LOOK("FCS2", "B"), i + 6), 4
+        End If
+    End If
+    If C_LOOK("SCS", "B") > 0 Then
+        If UCase(Worksheets("BOM").Range("A" & C_LOOK("SCS", "B"))) = "P" Then
+            LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-scs-" & article, Worksheets("BOM").cellS(C_LOOK("SCS", "B"), i + 6), 4
+        End If
+    End If
+    If C_LOOK("SCS1", "B") > 0 Then
+        If UCase(Worksheets("BOM").Range("A" & C_LOOK("SCS1", "B"))) = "P" Then
+            LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-scs1-" & article, Worksheets("BOM").cellS(C_LOOK("SCS1", "B"), i + 6), 4
+        End If
+    End If
+    If C_LOOK("SCS2", "B") > 0 Then
+        If UCase(Worksheets("BOM").Range("A" & C_LOOK("SCS2", "B"))) = "P" Then
+            LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-scs2-" & article, Worksheets("BOM").cellS(C_LOOK("SCS2", "B"), i + 6), 4
+        End If
+    End If
+    If itemCount > 0 Then
+        LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "PRINTING-CHARGES", 1, 290
+    End If
+     row_count = row_count + itemCount
+    Next i
+    
+End Sub
+
+'Printing Upper1 - PCS1
+Sub PRINTING_UPPER1(ite As String)
+    
+    For i = 0 To siz
+        itemCount = 0
+        If C_LOOK("CCP1", "B") > 0 Then
+            If UCase(Worksheets("BOM").Range("A" & C_LOOK("CCP1", "B"))) <> "M" Then
+                LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-ccp1-" & article & WorksheetFunction.Text(artSize(0) + i, "00"), 1, 4
+            End If
+        End If
+         If C_LOOK("FCM", "B") > 0 Then
+            If UCase(Worksheets("BOM").Range("A" & C_LOOK("FCM", "B"))) = "P" Then
+                LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-mcs-" & article & WorksheetFunction.Text(artSize(0) + i, "00"), 1, 4
+            End If
+        End If
+        If C_LOOK("FCS", "B") > 0 Then
+            If UCase(Worksheets("BOM").Range("A" & C_LOOK("FCS", "B"))) = "P" Then
+                LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-fcs-" & article, Worksheets("BOM").cellS(C_LOOK("FCS", "B"), i + 6), 4
+            End If
+        End If
+        If C_LOOK("FCS1", "B") > 0 Then
+            If UCase(Worksheets("BOM").Range("A" & C_LOOK("FCS1", "B"))) = "P" Then
+                LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-fcs1-" & article, Worksheets("BOM").cellS(C_LOOK("FCS1", "B"), i + 6), 4
+            End If
+        End If
+        If C_LOOK("FCS2", "B") > 0 Then
+            If UCase(Worksheets("BOM").Range("A" & C_LOOK("FCS2", "B"))) = "P" Then
+                LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-fcs2-" & article, Worksheets("BOM").cellS(C_LOOK("FCS2", "B"), i + 6), 4
+            End If
+        End If
+        If C_LOOK("SCS", "B") > 0 Then
+            If UCase(Worksheets("BOM").Range("A" & C_LOOK("SCS", "B"))) = "P" Then
+                LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-scs-" & article, Worksheets("BOM").cellS(C_LOOK("SCS", "B"), i + 6), 4
+            End If
+        End If
+        If C_LOOK("SCS1", "B") > 0 Then
+            If UCase(Worksheets("BOM").Range("A" & C_LOOK("SCS1", "B"))) = "P" Then
+                LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-scs1-" & article, Worksheets("BOM").cellS(C_LOOK("SCS1", "B"), i + 6), 4
+            End If
+        End If
+        If C_LOOK("SCS2", "B") > 0 Then
+            If UCase(Worksheets("BOM").Range("A" & C_LOOK("SCS2", "B"))) = "P" Then
+                LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-scs2-" & article, Worksheets("BOM").cellS(C_LOOK("SCS2", "B"), i + 6), 4
+            End If
+        End If
+        If itemCount > 0 Then
+            LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "PRINTING-CHARGES", 1, 290
+        End If
+        row_count = row_count + itemCount
+    Next i
+    
+End Sub
+
+
+'Marking Upper - MCS
+Sub MARKING_UPPER(ite As String)
+    For i = 0 To siz
+        itemCount = 0
+        If C_LOOK("FCM", "B") > 0 Then
+            If UCase(Worksheets("BOM").Range("A" & C_LOOK("FCM", "B"))) <> "P" Then
+                LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-fcm-" & article, Worksheets("BOM").cellS(C_LOOK("FCM", "B"), i + 6), 4
+            End If
+        End If
+        If C_LOOK("FCM1", "B") > 0 Then
+            If UCase(Worksheets("BOM").Range("A" & C_LOOK("FCM", "B"))) <> "P" Then
+                LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-fcm1-" & article, Worksheets("BOM").cellS(C_LOOK("FCM1", "B"), i + 6), 4
+            End If
+        End If
+        If C_LOOK("FCM2", "B") > 0 Then
+            If UCase(Worksheets("BOM").Range("A" & C_LOOK("FCM", "B"))) <> "P" Then
+                LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-fcm2-" & article, Worksheets("BOM").cellS(C_LOOK("FCM2", "B"), i + 6), 4
+            End If
+        End If
+        If C_LOOK("CCP", "B") > 0 Then
+            If UCase(Worksheets("BOM").Range("A" & C_LOOK("CCP", "B"))) = "M" Then
+                LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-pcs-" & article & WorksheetFunction.Text(artSize(0) + i, "00"), 1, 4
+            End If
+        End If
+        If C_LOOK("CCP1", "B") > 0 Then
+            If UCase(Worksheets("BOM").Range("A" & C_LOOK("CCP1", "B"))) = "M" Then
+                LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-pcs1-" & article & WorksheetFunction.Text(artSize(0) + i, "00"), 1, 4
+            End If
+        End If
+        If itemCount > 0 Then
+            LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "MARKING-CHARGES", 1, 290
+        End If
+        row_count = row_count + itemCount
+    Next i
+End Sub
+
+'Clicked component #Printing|Stitching - CCP|CCS
+Sub CLICKING_UPPER(ite As String)
+    Select Case ite
+        Case "4-ccp-" & article
+            cellX = CELL_X("CCP")
+        Case "4-ccp1-" & article
+            cellX = CELL_X("CCP1")
+        Case Else
+            cellX = CELL_X("CCS")
+    End Select
+    For i = 0 To siz
+        itemCount = 0
+        For j = 0 To cellX(1) - 1
+            If IsEmpty(Worksheets("BOM").Range("D" & cellX(0) + j).Value) = False Then
+                LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, Worksheets("BOM").Range("D" & cellX(0) + j), Worksheets("BOM").cellS(cellX(0) + j, 6 + i), 4
+            End If
+        Next j
+        If itemCount > 0 Then
+            LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "CLICK-OH", 1, 290
+            row_count = row_count + itemCount
+        End If
+    Next i
+End Sub
+
+'Folded component #Marking|Folding|Slitting - FCM|FCS
+Sub FOLDED_UPPER(ite As String)
+    Select Case ite
+        Case "4-fcm-" & article
+            cellX = CELL_X("FCM")
+        Case Else
+            cellX = CELL_X("FCS")
+    End Select
+    LINE_CELLS ite, itemCount, "4-scf-" & article, 1, 4
+            
+        
+            Worksheets("LINE").Range("A" & r + 1).Value = scf(0) & art
+            Worksheets("LINE").Range("B" & r + 1).Value = 0
+            Worksheets("LINE").Range("C" & r + 1).Value = Worksheets("BOM").Range("D" & C_LOOK("FCS", "C"))
+            Worksheets("LINE").Range("D" & r + 1).Value = Worksheets("BOM").cellS(C_LOOK("FCS", "C"), 7 + siz)
+            Worksheets("LINE").Range("H" & r + 1).Value = 4
+        
+            Worksheets("LINE").Range("A" & r + 2).Value = scf(0) & art
+            Worksheets("LINE").Range("B" & r + 2).Value = 1
+            Worksheets("LINE").Range("C" & r + 2).Value = "SLITT-OH"
+            Worksheets("LINE").Range("D" & r + 2).Value = 1
+            Worksheets("LINE").Range("H" & r + 2).Value = 290
+    
+    
+End Sub
+
+
 
 Sub LINE_CELLS(valueA, valueB, valueC, valueD, valueH As String)
     Worksheets("LINE").Range("A" & row_count + itemCount).Value = UCase(valueA)
