@@ -91,6 +91,7 @@ scCount = MC_ITEMS(brandSize) 'small carton counts in mc
     If C_LOOK("FCM", "B") > 0 Then
         MARKING_UPPER "4-mcs-" & article
     End If
+    
 
 End Sub
 'Master Carton - MC
@@ -381,31 +382,49 @@ End Sub
 
 'Folded component #Marking|Folding|Slitting - FCM|FCS
 Sub FOLDED_UPPER(ite As String)
+    itemCount = 0
+    Dim slit As String
     Select Case ite
         Case "4-fcm-" & article
             cellX = CELL_X("FCM")
-        Case Else
+            slit = "4-scf-"
+        Case "4-fcm1-" & article
+            cellX = CELL_X("FCM1")
+            slit = "4-scf2-"
+        Case "4-fcm2-" & article
+            cellX = CELL_X("FCM2")
+            slit = "4-scf2-"
+        Case "4-fcs-" & article
             cellX = CELL_X("FCS")
+        Case "4-fcs1-" & article
+            cellX = CELL_X("FCS1")
+            slit = "4-scf1-"
+        Case "4-fcs2-" & article
+            cellX = CELL_X("FCS2")
+            slit = "4-scf2-"
+        Case Else
+            MsgBox "Folding is undefined"
+            Return
     End Select
-    LINE_CELLS ite, itemCount, "4-scf-" & article, 1, 4
-            
-        
-            Worksheets("LINE").Range("A" & r + 1).Value = scf(0) & art
-            Worksheets("LINE").Range("B" & r + 1).Value = 0
-            Worksheets("LINE").Range("C" & r + 1).Value = Worksheets("BOM").Range("D" & C_LOOK("FCS", "C"))
-            Worksheets("LINE").Range("D" & r + 1).Value = Worksheets("BOM").cellS(C_LOOK("FCS", "C"), 7 + siz)
-            Worksheets("LINE").Range("H" & r + 1).Value = 4
-        
-            Worksheets("LINE").Range("A" & r + 2).Value = scf(0) & art
-            Worksheets("LINE").Range("B" & r + 2).Value = 1
-            Worksheets("LINE").Range("C" & r + 2).Value = "SLITT-OH"
-            Worksheets("LINE").Range("D" & r + 2).Value = 1
-            Worksheets("LINE").Range("H" & r + 2).Value = 290
-    
-    
+    LINE_CELLS ite, itemCount, slit & article, 1, 4
+    If cellX(1) > 1 Then
+        LINE_CELLS ite, itemCount, Worksheets("BOM").Range("D" & cellX(0) + 1), Worksheets("BOM").cellS(cellX(0) + 1, 7 + siz), 4
+    End If
+    row_count = row_count + itemCount
+    itemCount = 0
+     LINE_CELLS slit & article, itemCount, Worksheets("BOM").Range("D" & cellX(0)), Worksheets("BOM").cellS(cellX(0), 7 + siz), 4
+     LINE_CELLS slit & article, itemCount, "SLITT-OH", 1, 290
+     row_count = row_count + itemCount
 End Sub
 
-
+'Slitted component SCS|SCF
+Sub SLITTED_UPPER(ite As String)
+    itemCount = 0
+    cellX = CELL_X("SCS")
+    LINE_CELLS ite, itemCount, Worksheets("BOM").Range("D" & cellX(0)), Worksheets("BOM").cellS(cellX(0), 7 + siz), 4
+    LINE_CELLS ite, itemCount, "SLITT-OH", 1, 290
+    
+End Sub
 
 Sub LINE_CELLS(valueA, valueB, valueC, valueD, valueH As String)
     Worksheets("LINE").Range("A" & row_count + itemCount).Value = UCase(valueA)
