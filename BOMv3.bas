@@ -2,7 +2,7 @@ Attribute VB_Name = "BOMv3"
 'Version 0.3
 'A Product from, FORTUNE ELASTOMERS BRANCH, KINALOOR #OM-DEPT
 'Created by kalaLokia #4442   ;-)
-'DISCLAIMER: USE IT ON YOUR OWN RISK, DO NOT BLAME ON US ¯\_(?)_/¯
+'DISCLAIMER: USE IT ON YOUR OWN RISK, DO NOT BLAME ON US ?\_(?)_/?
 
 Public artSize() As Long
 Public siz, row_count, itemCount, scCount() As Integer
@@ -42,7 +42,7 @@ Sub BOM()
         MOULDED_PU "4-mpu-" & article
     End If
 'FU
-     If C_LOOK("FU", "B") > 0 Then
+     If C_LOOK("FU", "B") > 0 Or C_LOOK("CCP", "B") > 0 Then
         FINISHED_UPPER "4-fu-" & article
     End If
 'PCS
@@ -91,7 +91,7 @@ Sub BOM()
     End If
 'FCS2
     If C_LOOK("FCS2", "B") > 0 Then
-        FOLDED_UPPER "4-fcs-" & article
+        FOLDED_UPPER "4-fcs2-" & article
     End If
 'SCS
     If C_LOOK("SCS", "B") > 0 Then
@@ -106,8 +106,8 @@ Sub BOM()
         SLITTED_UPPER "4-scs2-" & article
     End If
     
-LINE_TREE_TITLES
-BUILD_TREE
+LINE_TREE_TITLES 666
+BUILD_TREE 666
     
 
 End Sub
@@ -176,6 +176,8 @@ Sub FINISHED_UPPER(ite As String)
         If UCase(Worksheets("BOM").Range("A" & C_LOOK("CCP1", "B"))) <> "M" Then
             LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-pcs1-" & article & WorksheetFunction.Text(artSize(0) + i, "00"), 1, 4
         End If
+    ElseIf C_LOOK("P1", "A") > 0 Then
+        LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-pcs1-" & article & WorksheetFunction.Text(artSize(0) + i, "00"), 1, 4
     End If
       
     If C_LOOK("CCS", "B") > 0 Then
@@ -184,8 +186,9 @@ Sub FINISHED_UPPER(ite As String)
     If C_LOOK("FCM", "B") > 0 Then
         If InStr(1, Worksheets("BOM").Range("A" & C_LOOK("FCM", "B")), "P", vbTextCompare) = 0 Then
             LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-mcs-" & article & WorksheetFunction.Text(artSize(0) + i, "00"), 1, 4
-        
         End If
+    ElseIf C_LOOK("M", "A") > 0 Then
+        LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-mcs-" & article & WorksheetFunction.Text(artSize(0) + i, "00"), 1, 4
     End If
     If C_LOOK("FCS", "B") > 0 Then
          If InStr(1, Worksheets("BOM").Range("A" & C_LOOK("FCS", "B")), "P", vbTextCompare) = 0 Then
@@ -475,7 +478,7 @@ Sub TREE_CELLS(valueA, valueB As String, rc As Long)
     itemCount = itemCount + 1
 End Sub
 
-Sub LINE_TREE_TITLES()
+Sub LINE_TREE_TITLES(val As Integer)
     Worksheets("LINE").Range("A1").Value = "ParentKey"
     Worksheets("LINE").Range("A2").Value = "TreeCode"
     Worksheets("LINE").Range("B1").Value = "LineNum"
@@ -506,7 +509,7 @@ Sub LINE_TREE_TITLES()
     Worksheets("TREE").Range("F2").Value = "U_OhApp"
 End Sub
 
-Sub BUILD_TREE()
+Sub BUILD_TREE(val As Integer)
     'Requires a sheet with name "TREE"
 Dim lastRow, r As Long
 r = 2
