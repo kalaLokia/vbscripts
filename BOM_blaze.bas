@@ -1,15 +1,15 @@
-Attribute VB_Name = "BOMv5"
-'Version 0.4
+Attribute VB_Name = "BOM_v5_blaze"
+'Version 0.5 blaze : supports both shoes and slippers
 'A Product from, FORTUNE ELASTOMERS BRANCH, KINALOOR #OM-DEPT
 'Created by kalaLokia #4442   ;-)
 'DISCLAIMER: USE IT ON YOUR OWN RISK, DO NOT BLAME ON US ?\_(?)_/?
 
 Public artSize() As Long
-Public siz, row_count, itemCount, scCount() As Integer
+Public siz, row_count, itemCount, rwc, scCount() As Integer
 Public article, brandSize As String
 Public cellX() As Long
 
-Sub BOM()
+Sub BOM_TEST()
 'TEST SAMPLE, requires "BOM", "LINE" & "TREE" sheets to excecute
 
 'CLEARS ALL DATA IN SHEETS LINE & TREE
@@ -30,6 +30,9 @@ Sub BOM()
     Else
         brandSize = UCase(Worksheets("BOM").Range("D7"))
     End If
+    If Worksheets("BOM").Range("D6").Value = "SHOES" Then
+        brandSize = brandSize & "_SHOES"
+    End If
     scCount = MC_ITEMS(brandSize) 'small carton counts in mc
 
 
@@ -49,12 +52,16 @@ Sub BOM()
      If C_LOOK("FU", "B") > 0 Or C_LOOK("CCP", "B") > 0 Then
         FINISHED_UPPER "4-fu-" & article
     End If
+'PCM
+    If C_LOOK("PCM", "B") > 0 Then
+        PRINTING_MPUCOM "4-pcm-" & article
+    End If
 'PCS
     If C_LOOK("CCP", "B") > 0 Or C_LOOK("P", "A") > 0 Then
         PRINTING_UPPER "4-pcs-" & article
     End If
 'PCS1
-    If C_LOOK("CCP1", "B") > 0 Or C_LOOK("P1", "A") > 0 Then
+    If C_LOOK("CCP1", "B") > 0 Or C_LOOK("P1", "A") > 0 Or C_LOOK("PCS1", "B") > 0 Then
         PRINTING_UPPER1 "4-pcs1-" & article
     End If
 'MCS
@@ -99,15 +106,15 @@ Sub BOM()
     End If
 'SCS
     If C_LOOK("SCS", "B") > 0 Then
-        SLITTED_UPPER "4-scs-" & article
+        SLITTED_UPPER "4-scs-" & article, True
     End If
 'SCS1
     If C_LOOK("SCS1", "B") > 0 Then
-        SLITTED_UPPER "4-scs1-" & article
+        SLITTED_UPPER "4-scs1-" & article, False
     End If
 'SCS2
     If C_LOOK("SCS2", "B") > 0 Then
-        SLITTED_UPPER "4-scs2-" & article
+        SLITTED_UPPER "4-scs2-" & article, False
     End If
     
 LINE_TREE_TITLES 666
@@ -149,20 +156,31 @@ End Sub
 
 'Moulded PU
 Sub MOULDED_PU(ite As String)
+
     cellX = CELL_X("MPU")
+    cllX = CELL_X("PCM")
     For i = 0 To siz
         itemCount = 0
-        LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-fu-" & article & WorksheetFunction.Text(artSize(0) + i, "00"), 1, 4
-        LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-PUX-0004", Worksheets("BOM").cellS(cellX(0), i + 6), 4
-       
-        If C_LOOK("SOFT", "C") > 0 Then
-            LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "5-PO01-0004", Worksheets("BOM").cellS(C_LOOK("SOFT", "C"), i + 6) * 34 / 134, 4
-            LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "5-PO01-0018", Worksheets("BOM").cellS(C_LOOK("SOFT", "C"), i + 6) - (Worksheets("BOM").cellS(C_LOOK("SOFT", "C"), i + 6) * 34 / 134), 4
+         If C_LOOK("FU", "B") > 0 Or C_LOOK("CCP", "B") > 0 Then
+            LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-fu-" & article & WorksheetFunction.Text(artSize(0) + i, "00"), 1, 4
+         End If
+        For j = 0 To cllX(1) - 1
+            If C_LOOK("PCM", "B") > 0 And IsEmpty(Worksheets("BOM").cellS(cllX(0) + j, 6 + i).Value) = False Then
+                LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-pcm-" & article & WorksheetFunction.Text(artSize(0) + i, "00"), 1, 4
+                Exit For
+            End If
+        Next j
+        For j = 0 To cellX(1) - 1
+            
+            If IsEmpty(Worksheets("BOM").Range("D" & cellX(0) + j).Value) = False And IsEmpty(Worksheets("BOM").cellS(cellX(0) + j, 6 + i).Value) = False Then
+                LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, Worksheets("BOM").Range("D" & cellX(0) + j), Worksheets("BOM").cellS(cellX(0) + j, 6 + i), 4
+            End If
+            
+        Next j
+        If itemCount > 0 Then
+            LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "MPU-OH", 1, 290
+            row_count = row_count + itemCount
         End If
-         LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "6-ADH-0029", 0.0003, 4
-         LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "6-CHM-0126", 0.0008, 4
-        LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "MPU-OH", 1, 290
-       row_count = row_count + itemCount
     Next i
 End Sub
 
@@ -240,6 +258,26 @@ Sub FINISHED_UPPER(ite As String)
     Next i
 
 End Sub
+
+'Printing Components on MPU
+Sub PRINTING_MPUCOM(ite As String)
+
+    cellX = CELL_X("PCM")
+    For i = 0 To siz
+        itemCount = 0
+        For j = 0 To cellX(1) - 1
+            If IsEmpty(Worksheets("BOM").Range("D" & cellX(0) + j).Value) = False And IsEmpty(Worksheets("BOM").cellS(cellX(0) + j, 6 + i).Value) = False Then
+                LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, Worksheets("BOM").Range("D" & cellX(0) + j), Worksheets("BOM").cellS(cellX(0) + j, 6 + i), 4
+            End If
+        Next j
+        If itemCount > 0 Then
+            LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "PRINTING-CHARGES", 1, 290
+            row_count = row_count + itemCount
+        End If
+    Next i
+
+End Sub
+
 
 'Printing Upper - PCS
 Sub PRINTING_UPPER(ite As String)
@@ -373,19 +411,19 @@ Sub MARKING_UPPER(ite As String)
     For i = 0 To siz
         itemCount = 0
         If C_LOOK("FCM", "B") > 0 Then
-            If UCase(Worksheets("BOM").Range("A" & C_LOOK("FCM", "B"))) <> "P" Then
+            
                 LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-fcm-" & article, Worksheets("BOM").cellS(C_LOOK("FCM", "B"), i + 6), 4
-            End If
+           
         End If
         If C_LOOK("FCM1", "B") > 0 Then
-            If UCase(Worksheets("BOM").Range("A" & C_LOOK("FCM", "B"))) <> "P" Then
+            
                 LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-fcm1-" & article, Worksheets("BOM").cellS(C_LOOK("FCM1", "B"), i + 6), 4
-            End If
+            
         End If
         If C_LOOK("FCM2", "B") > 0 Then
-            If UCase(Worksheets("BOM").Range("A" & C_LOOK("FCM", "B"))) <> "P" Then
+           
                 LINE_CELLS ite & WorksheetFunction.Text(artSize(0) + i, "00"), itemCount, "4-fcm2-" & article, Worksheets("BOM").cellS(C_LOOK("FCM2", "B"), i + 6), 4
-            End If
+          
         End If
         If C_LOOK("CCP", "B") > 0 Then
             If UCase(Worksheets("BOM").Range("A" & C_LOOK("CCP", "B"))) = "M" Then
@@ -479,7 +517,7 @@ Sub FOLDED_UPPER(ite As String)
 End Sub
 
 'Slitted component SCS
-Sub SLITTED_UPPER(ite As String)
+Sub SLITTED_UPPER(ite As String, oh As Boolean)
     itemCount = 0
     Select Case ite
         Case "4-scs-" & article
@@ -490,7 +528,10 @@ Sub SLITTED_UPPER(ite As String)
             cellX = CELL_X("SCS2")
     End Select
     LINE_CELLS ite, itemCount, Worksheets("BOM").Range("D" & cellX(0)), Worksheets("BOM").cellS(cellX(0), 7 + siz), 4
-    LINE_CELLS ite, itemCount, "SLITT-OH", 1, 290
+    If oh Then
+        LINE_CELLS ite, itemCount, "SLITT-OH", 1, 290
+    End If
+   row_count = row_count + itemCount
     
 End Sub
 
@@ -564,7 +605,7 @@ For i = 3 To lastRow
            TREE_CELLS "MPU", "Y", r
         ElseIf InStr(1, Worksheets("TREE").Range("A" & r), "4-FU-", vbTextCompare) > 0 Then
             TREE_CELLS "STITCH", "Y", r
-         ElseIf InStr(1, Worksheets("TREE").Range("A" & r), "4-PCS", vbTextCompare) > 0 Then
+         ElseIf InStr(1, Worksheets("TREE").Range("A" & r), "4-PC", vbTextCompare) > 0 Then
             TREE_CELLS "PRINT", "Y", r
         ElseIf InStr(1, Worksheets("TREE").Range("A" & r), "4-CC", vbTextCompare) > 0 Then
             TREE_CELLS "CLICK", "Y", r
@@ -601,7 +642,62 @@ Function SIZE_DECODE(siz As String) As Long()
     End If
     SIZE_DECODE = result
 End Function
+'##########################################################################################################
+'#####################               MPU ITEMS FROM SOLE                ###################################
+'##########################################################################################################
+Sub SOLE_ITEMS()
 
+    cellX = CELL_X("MPU")
+    rwc = cellX(0)
+    'SHOES
+    If C_LOOK("JBLD", "C") > 0 Then
+        BOM_CELLS "OUTTER SOLE", "4-PUX-0040", Worksheets("BOM").Range("E" & C_LOOK("SOLE", "B")).Value, Worksheets("BOM").Range("F" & C_LOOK("SOLE", "B")).Value, Worksheets("BOM").Range("G" & C_LOOK("SOLE", "B")).Value, Worksheets("BOM").Range("H" & C_LOOK("SOLE", "B")).Value, Worksheets("BOM").Range("I" & C_LOOK("SOLE", "B")).Value, Worksheets("BOM").Range("J" & C_LOOK("SOLE", "B")).Value
+        BOM_CELLS "MID SOLE[i]", "5-PO01-0043", "PU-JBLD ISO MDI 2509/IN", 72 / 175 * Worksheets("BOM").Range("F" & 1 + C_LOOK("SOLE", "B")).Value, 72 / 175 * Worksheets("BOM").Range("G" & 1 + C_LOOK("SOLE", "B")).Value, 72 / 175 * Worksheets("BOM").Range("H" & 1 + C_LOOK("SOLE", "B")).Value, 72 / 175 * Worksheets("BOM").Range("I" & 1 + C_LOOK("SOLE", "B")).Value, 72 / 175 * Worksheets("BOM").Range("J" & 1 + C_LOOK("SOLE", "B")).Value
+        BOM_CELLS "MID SOLE[p]", "5-PO01-0044", "PU-JBLD POLYOL 721", 100 / 175 * 200 / 225 * Worksheets("BOM").Range("F" & 1 + C_LOOK("SOLE", "B")).Value, 100 / 175 * 200 / 225 * Worksheets("BOM").Range("G" & 1 + C_LOOK("SOLE", "B")).Value, 100 / 175 * 200 / 225 * Worksheets("BOM").Range("H" & 1 + C_LOOK("SOLE", "B")).Value, 100 / 175 * 200 / 225 * Worksheets("BOM").Range("I" & 1 + C_LOOK("SOLE", "B")).Value, 100 / 175 * 200 / 225 * Worksheets("BOM").Range("J" & 1 + C_LOOK("SOLE", "B")).Value
+        BOM_CELLS "ADDITIVE[p]", "6-CHM-0146", "JBLD ADDITIVE P721/3/200", 100 / 175 * 25 / 225 * Worksheets("BOM").Range("F" & 1 + C_LOOK("SOLE", "B")).Value, 100 / 175 * 25 / 225 * Worksheets("BOM").Range("G" & 1 + C_LOOK("SOLE", "B")).Value, 100 / 175 * 25 / 225 * Worksheets("BOM").Range("H" & 1 + C_LOOK("SOLE", "B")).Value, 100 / 175 * 25 / 225 * Worksheets("BOM").Range("I" & 1 + C_LOOK("SOLE", "B")).Value, 100 / 175 * 25 / 225 * Worksheets("BOM").Range("J" & 1 + C_LOOK("SOLE", "B")).Value
+        BOM_CELLS "MID SOLE[c]", "6-CHM-0019", "PIGMENT KC 1871 WHITE", 3 / 175 * Worksheets("BOM").Range("F" & 1 + C_LOOK("SOLE", "B")).Value, 3 / 175 * Worksheets("BOM").Range("G" & 1 + C_LOOK("SOLE", "B")).Value, 3 / 175 * Worksheets("BOM").Range("H" & 1 + C_LOOK("SOLE", "B")).Value, 3 / 175 * Worksheets("BOM").Range("I" & 1 + C_LOOK("SOLE", "B")).Value, 3 / 175 * Worksheets("BOM").Range("J" & 1 + C_LOOK("SOLE", "B")).Value
+        BOM_CELLS "IMC -WH", "6-CHM-0156", "Water Base IMC White KB 4505", 0.005, 0.005, 0.005, 0.005, 0.005
+        BOM_CELLS "WB 07A", "6-CHM-0126", "RELEASE AGENT W.B 711/07A", 0.001, 0.001, 0.001, 0.001, 0.001
+        BOM_CELLS "1602", "6-CHM-0010", "RELEASE AGENT KECK  1602/18", 0.001, 0.001, 0.001, 0.001, 0.001
+    'DOUBLE COLOR
+    ElseIf C_LOOK("2 COLOR", "C") > 0 Then
+        BOM_CELLS "OUTTER SOLE", "4-PUX-0004", Worksheets("BOM").Range("E" & C_LOOK("SOLE", "B")).Value, Worksheets("BOM").Range("F" & C_LOOK("SOLE", "B")).Value, Worksheets("BOM").Range("G" & C_LOOK("SOLE", "B")).Value, Worksheets("BOM").Range("H" & C_LOOK("SOLE", "B")).Value, Worksheets("BOM").Range("I" & C_LOOK("SOLE", "B")).Value, Worksheets("BOM").Range("J" & C_LOOK("SOLE", "B")).Value
+        BOM_CELLS "MID SOLE[i]", "5-PO01-0004", "ISO 163", 51 / 154 * Worksheets("BOM").Range("F" & 1 + C_LOOK("SOLE", "B")).Value, 51 / 154 * Worksheets("BOM").Range("G" & 1 + C_LOOK("SOLE", "B")).Value, 51 / 154 * Worksheets("BOM").Range("H" & 1 + C_LOOK("SOLE", "B")).Value, 51 / 154 * Worksheets("BOM").Range("I" & 1 + C_LOOK("SOLE", "B")).Value, 51 / 154 * Worksheets("BOM").Range("J" & 1 + C_LOOK("SOLE", "B")).Value
+        BOM_CELLS "MID SOLE[p]", "5-PO01-0042", "POLY VB1", 100 / 154 * Worksheets("BOM").Range("F" & 1 + C_LOOK("SOLE", "B")).Value, 100 / 154 * Worksheets("BOM").Range("G" & 1 + C_LOOK("SOLE", "B")).Value, 100 / 154 * Worksheets("BOM").Range("H" & 1 + C_LOOK("SOLE", "B")).Value, 100 / 154 * Worksheets("BOM").Range("I" & 1 + C_LOOK("SOLE", "B")).Value, 100 / 154 * Worksheets("BOM").Range("J" & 1 + C_LOOK("SOLE", "B")).Value
+        BOM_CELLS "MID SOLE[c]", "6-CHM-0019", "PIGMENT KC 1871 WHITE", 3 / 154 * Worksheets("BOM").Range("F" & 1 + C_LOOK("SOLE", "B")).Value, 3 / 154 * Worksheets("BOM").Range("G" & 1 + C_LOOK("SOLE", "B")).Value, 3 / 154 * Worksheets("BOM").Range("H" & 1 + C_LOOK("SOLE", "B")).Value, 3 / 154 * Worksheets("BOM").Range("I" & 1 + C_LOOK("SOLE", "B")).Value, 3 / 154 * Worksheets("BOM").Range("J" & 1 + C_LOOK("SOLE", "B")).Value
+        BOM_CELLS "IMC -WH", "6-CHM-0156", "Water Base IMC White KB 4505", 0.004, 0.004, 0.004, 0.004, 0.004
+        BOM_CELLS "WB 07A", "6-CHM-0126", "RELEASE AGENT W.B 711/07A", 0.001, 0.001, 0.001, 0.001, 0.001
+        BOM_CELLS "1602", "6-CHM-0010", "RELEASE AGENT KECK  1602/18", 0.001, 0.001, 0.001, 0.001, 0.001
+        
+    Else:
+        BOM_CELLS "OUTTER SOLE", "4-PUX-0004", Worksheets("BOM").Range("E" & C_LOOK("SOLE", "B")).Value, Worksheets("BOM").Range("F" & C_LOOK("SOLE", "B")).Value, Worksheets("BOM").Range("G" & C_LOOK("SOLE", "B")).Value, Worksheets("BOM").Range("H" & C_LOOK("SOLE", "B")).Value, Worksheets("BOM").Range("I" & C_LOOK("SOLE", "B")).Value, Worksheets("BOM").Range("J" & C_LOOK("SOLE", "B")).Value
+        'SOFT
+        If C_LOOK("SOFT", "C") > 0 Then
+            BOM_CELLS "MID SOLE[i]", "5-PO01-0004", "ISO  99055290 SHISO GE -163 (DOW)", 34 / 134 * Worksheets("BOM").Range("F" & 1 + C_LOOK("SOLE", "B")).Value, 34 / 134 * Worksheets("BOM").Range("G" & 1 + C_LOOK("SOLE", "B")).Value, 34 / 134 * Worksheets("BOM").Range("H" & 1 + C_LOOK("SOLE", "B")).Value, 34 / 134 * Worksheets("BOM").Range("I" & 1 + C_LOOK("SOLE", "B")).Value, 34 / 134 * Worksheets("BOM").Range("J" & 1 + C_LOOK("SOLE", "B")).Value
+            BOM_CELLS "MID SOLE[p]", "5-PO01-0018", "VORALAST SOFT POLYOL GM899-DOW", 100 / 134 * 200 / 202.5 * Worksheets("BOM").Range("F" & 1 + C_LOOK("SOLE", "B")).Value, 100 / 134 * 200 / 202.5 * Worksheets("BOM").Range("G" & 1 + C_LOOK("SOLE", "B")).Value, 100 / 134 * 200 / 202.5 * Worksheets("BOM").Range("H" & 1 + C_LOOK("SOLE", "B")).Value, 100 / 134 * 200 / 202.5 * Worksheets("BOM").Range("I" & 1 + C_LOOK("SOLE", "B")).Value, 100 / 134 * 200 / 202.5 * Worksheets("BOM").Range("J" & 1 + C_LOOK("SOLE", "B")).Value
+            BOM_CELLS "ADDITIVE[p]", "6-CHM-0115", "VORALAST NATURAL 817 ADDICTIVE", 100 / 134 * 2.5 / 202.5 * Worksheets("BOM").Range("F" & 1 + C_LOOK("SOLE", "B")).Value, 100 / 134 * 2.5 / 202.5 * Worksheets("BOM").Range("G" & 1 + C_LOOK("SOLE", "B")).Value, 100 / 134 * 2.5 / 202.5 * Worksheets("BOM").Range("H" & 1 + C_LOOK("SOLE", "B")).Value, 100 / 134 * 2.5 / 202.5 * Worksheets("BOM").Range("I" & 1 + C_LOOK("SOLE", "B")).Value, 100 / 134 * 2.5 / 202.5 * Worksheets("BOM").Range("J" & 1 + C_LOOK("SOLE", "B")).Value
+            
+        End If
+        BOM_CELLS "ELFI", "6-ADH-0029", "ELFI", 0.0003, 0.0003, 0.0003, 0.0003, 0.0003
+        BOM_CELLS "WB 07A", "6-CHM-0126", "RELEASE AGENT W.B 711/07A", 0.0008, 0.0008, 0.0008, 0.0008, 0.0008
+    End If
+    
+End Sub
+'############################################################################################################
+'############################################################################################################
+
+
+Sub BOM_CELLS(valueC, valueD, valueE, valueF, valueG, valueH, valueI, valueJ As String)
+    Worksheets("BOM").Range("C" & rwc).Value = UCase(valueC)
+    Worksheets("BOM").Range("D" & rwc).Value = UCase(valueD)
+    Worksheets("BOM").Range("E" & rwc).Value = UCase(valueE)
+    Worksheets("BOM").Range("F" & rwc).Value = Round(valueF, 4)
+    Worksheets("BOM").Range("G" & rwc).Value = Round(valueG, 4)
+    Worksheets("BOM").Range("H" & rwc).Value = Round(valueH, 4)
+    Worksheets("BOM").Range("I" & rwc).Value = Round(valueI, 4)
+    Worksheets("BOM").Range("J" & rwc).Value = Round(valueJ, 4)
+    rwc = rwc + 1
+End Sub
 
 Function CELL_X(cell_name As String) As Long()
     Dim cellS(2) As Long
@@ -654,6 +750,14 @@ Function MC_ITEMS(sizee As String) As Integer()
                 sc_count(4) = 2
                 sc_count(5) = 12
                 sc_count(6) = 1
+            Case "6X10_SHOES"
+                sc_count(0) = 3
+                sc_count(1) = 3
+                sc_count(2) = 4
+                sc_count(3) = 4
+                sc_count(4) = 4
+                sc_count(5) = 18
+                sc_count(6) = 1
             Case "7X10Z"
                 sc_count(0) = 3
                 sc_count(1) = 4
@@ -673,10 +777,10 @@ Function MC_ITEMS(sizee As String) As Integer()
                 sc_count(6) = 1
             Case "5X9Z"
                 sc_count(0) = 2
-                sc_count(1) = 2
-                sc_count(2) = 2
-                sc_count(3) = 3
-                sc_count(4) = 3
+                sc_count(1) = 3
+                sc_count(2) = 3
+                sc_count(3) = 2
+                sc_count(4) = 2
                 sc_count(5) = 12
                 sc_count(6) = 1
             Case "5X8"
@@ -754,5 +858,7 @@ Function MC_ITEMS(sizee As String) As Integer()
         End Select
     MC_ITEMS = sc_count()
 End Function
+
+
 
 
