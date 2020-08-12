@@ -1,5 +1,5 @@
 Attribute VB_Name = "PACKING_DB"
-' Version 0.3
+' Version 0.4
 ' Created and modified by Sabareesh
 
 Sub PACKING_DB()
@@ -88,6 +88,8 @@ Sub PACKING_DB()
                  Worksheets("BOM").Range("f" & mc_raw + r).Value = msc(1)
             ElseIf Worksheets("BOM").Range("d" & mc_raw + r).Value = "7-BT-0001" Then
                 Worksheets("BOM").Range("f" & mc_raw + r).Value = msc(0)
+            ElseIf Worksheets("BOM").Range("d" & mc_raw + r).Value = "7-PS-0023" Then
+                Worksheets("BOM").Range("f" & mc_raw + r).Value = 2
             Else:
             Worksheets("BOM").Range("f" & mc_raw + r).Value = 1
             End If

@@ -1,14 +1,12 @@
 Attribute VB_Name = "CLICK_ENTRY"
-Sub CLICK_ENTRY()
-Attribute CLICK_ENTRY.VB_Description = "CLICKING DATA FOR SAP ENTRY, requires a sheet with name ""datas"" to work without any error. \n\nCreated By, Sabareesh A P ;-)"
-Attribute CLICK_ENTRY.VB_ProcData.VB_Invoke_Func = "E\n14"
-'
+
+' VERSION 0.3
 ' CLICK_ENTRY Macro
 ' CLICKING DATA FOR SAP ENTRY, requires a sheet with name "datas" to work without any error.   Created By, Sabareesh A P ;-)
 '
 ' Keyboard Shortcut: Ctrl+Shift+E
 '
-
+Sub CLICK_ENTRY()
 Dim ccs_s As Long
 Dim ccp_s As Long
 Dim ccs_n As Long
@@ -60,7 +58,7 @@ For j = 1 To 13
     
 Worksheets("datas").Range("A" & n).Value = j
 Worksheets("datas").Range("B" & n).Value = "=CLICKING!$C$" & ccp_s
-Worksheets("datas").Range("C" & n).Value = Chr(61) & Chr(34) & "4-CCP-" & Chr(34) & Chr(38) & "CLICKING!$D$" & ccp_s & Chr(38) & Chr(34) & Chr(45) & color(Worksheets("CLICKING").Range("E" & ccp_s)) & Chr(45) & Chr(34) & Chr(38) & "CLICKING!$F$" & ccp_s & Chr(38) & "TEXT" & Chr(40) & j & Chr(44) & Chr(34) & "00" & Chr(34) & Chr(41)
+Worksheets("datas").Range("C" & n).Value = Chr(61) & Chr(34) & "4-CCP-" & Chr(34) & Chr(38) & "CLICKING!$D$" & ccp_s & Chr(38) & Chr(34) & Chr(45) & COLOR(Worksheets("CLICKING").Range("E" & ccp_s)) & Chr(45) & Chr(34) & Chr(38) & "CLICKING!$F$" & ccp_s & Chr(38) & "TEXT" & Chr(40) & j & Chr(44) & Chr(34) & "00" & Chr(34) & Chr(41)
 Worksheets("datas").Range("I" & n).Value = Worksheets("CLICKING").cellS(ccp_s, j + 6)
 Worksheets("datas").Range("J" & n).Value = "=CLICKING!$T$" & ccp_s
 Worksheets("datas").Range("D" & n).Value = "=I" & n & "*J" & n
@@ -78,22 +76,23 @@ Next i
    
    ' CCS ENTRY
 n = n + 2
+
+Dim arr As Variant
+'ARTICLES WITH CCP1 INSTEAD CCS
+arr = Split("3290,3791,D4003,3780,8180", ",")
+
 For i = 1 To ccs_n
 For j = 1 To 13
 'If IsEmpty(ThisWorkbook.Worksheets("CLICKING").Range("D" & ccp_s).Value) = False Then
     If IsEmpty(Worksheets("CLICKING").cellS(ccs_s, j + 6).Value) = False Or Worksheets("CLICKING").cellS(ccs_s, j + 6).Value <> 0 Then
-If Worksheets("CLICKING").Range("D" & ccs_s) = 3290 Then
-ccs_t = "4-CCP1-"
-ElseIf Worksheets("CLICKING").Range("D" & ccs_s) = 3780 Then
-ccs_t = "4-CCP1-"
-ElseIf Worksheets("CLICKING").Range("D" & ccs_s) = "D4003" Then
-ccs_t = "4-CCP1-"
+If UBound(Filter(arr, UCase(Worksheets("CLICKING").Range("D" & ccs_s)))) <> -1 Then
+    ccs_t = "4-CCP1-"
 Else: ccs_t = "4-CCS-"
 End If
 
 Worksheets("datas").Range("A" & n).Value = j
 Worksheets("datas").Range("B" & n).Value = "=CLICKING!$C$" & ccs_s
-Worksheets("datas").Range("C" & n).Value = Chr(61) & Chr(34) & ccs_t & Chr(34) & Chr(38) & "CLICKING!$D$" & ccs_s & Chr(38) & Chr(34) & Chr(45) & color(Worksheets("CLICKING").Range("E" & ccs_s)) & Chr(45) & Chr(34) & Chr(38) & "CLICKING!$F$" & ccs_s & Chr(38) & "TEXT" & Chr(40) & j & Chr(44) & Chr(34) & "00" & Chr(34) & Chr(41)
+Worksheets("datas").Range("C" & n).Value = Chr(61) & Chr(34) & ccs_t & Chr(34) & Chr(38) & "CLICKING!$D$" & ccs_s & Chr(38) & Chr(34) & Chr(45) & COLOR(Worksheets("CLICKING").Range("E" & ccs_s)) & Chr(45) & Chr(34) & Chr(38) & "CLICKING!$F$" & ccs_s & Chr(38) & "TEXT" & Chr(40) & j & Chr(44) & Chr(34) & "00" & Chr(34) & Chr(41)
 Worksheets("datas").Range("I" & n).Value = Worksheets("CLICKING").cellS(ccs_s, j + 6)
 Worksheets("datas").Range("J" & n).Value = "=CLICKING!$T$" & ccs_s
 Worksheets("datas").Range("D" & n).Value = "=I" & n & "*J" & n
@@ -110,7 +109,7 @@ Next i
   
 End Sub
 
-Function color(colour As String)
+Function COLOR(colour As String)
 Dim col As String
 colour = UCase(colour)
 Select Case colour
@@ -136,6 +135,8 @@ Case "GOLD"
 col = "GD"
 Case "COPPER"
 col = "CO"
+Case "WHITE"
+col = "WT"
 Case "GREEN"
 col = "GR"
 Case "ORANGE"
@@ -158,6 +159,12 @@ Case "MR"
 col = "MR"
 Case "TB"
 col = "TB"
+Case "ST"
+col = "ST"
+Case "SA"
+col = "SA"
+Case "NR"
+col = "NR"
 Case "SK"
 col = "SK"
 Case "BK"
@@ -166,6 +173,8 @@ Case "BR"
 col = "BR"
 Case "BL"
 col = "BL"
+Case "WT"
+col = "WT"
 Case "RD"
 col = "RD"
 Case "PK"
@@ -196,11 +205,13 @@ Case "TR"
 col = "TR"
 Case "MH"
 col = "MH"
+Case "SE"
+col = "SE"
 Case Else
 col = "NOT-FOUND"
 End Select
 
-color = col
+COLOR = col
 End Function
 
 
