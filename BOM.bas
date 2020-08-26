@@ -1,6 +1,6 @@
 Attribute VB_Name = "BOM"
 'Version 0.7.260820 blaze : supports both shoes and slippers
-'A Product from, FORTUNE ELASTOMERS BRANCH, KINALOOR #OM-DEPT
+'A MACRO from, FORTUNE ELASTOMERS BRANCH, KINALOOR #OM-DEPT
 'Created by kalaLokia #4442   ;-)
 'DISCLAIMER: USE IT ON YOUR OWN RISK, DO NOT BLAME ON US ?\_(?)_/?
 
@@ -507,7 +507,10 @@ Sub FOLDED_UPPER(ite As String)
             MsgBox "Folding is undefined"
             Return
     End Select
-    LINE_CELLS ite, itemCount, slit & article, 1, 4
+    'Excludes slitting item if no value in the right most cell after the size columns
+    If Not (IsEmpty(Worksheets("BOM").cellS(cellX(0), 7 + siz))) Then
+        LINE_CELLS ite, itemCount, slit & article, 1, 4
+    End If
     'Items under folding, consumption per mtr length of folded component
     If cellX(1) > 1 Then
         i = cellX(0) + 1
@@ -521,11 +524,13 @@ Sub FOLDED_UPPER(ite As String)
    
     row_count = row_count + itemCount
     itemCount = 0
-     LINE_CELLS slit & article, itemCount, Worksheets("BOM").Range("D" & cellX(0)), Worksheets("BOM").cellS(cellX(0), 7 + siz), 4
-     If slit = "4-scf-" Then
-        LINE_CELLS slit & article, itemCount, "SLITT-OH", 1, 290
+    If Not (IsEmpty(Worksheets("BOM").cellS(cellX(0), 7 + siz))) Then
+        LINE_CELLS slit & article, itemCount, Worksheets("BOM").Range("D" & cellX(0)), Worksheets("BOM").cellS(cellX(0), 7 + siz), 4
+        If slit = "4-scf-" Then
+           LINE_CELLS slit & article, itemCount, "SLITT-OH", 1, 290
+        End If
+        row_count = row_count + itemCount
      End If
-     row_count = row_count + itemCount
 End Sub
 
 'Slitted component SCS
