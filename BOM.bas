@@ -1,5 +1,5 @@
 Attribute VB_Name = "BOM"
-'Version 0.6.060620 blaze : supports both shoes and slippers
+'Version 0.7.260820 blaze : supports both shoes and slippers
 'A Product from, FORTUNE ELASTOMERS BRANCH, KINALOOR #OM-DEPT
 'Created by kalaLokia #4442   ;-)
 'DISCLAIMER: USE IT ON YOUR OWN RISK, DO NOT BLAME ON US ?\_(?)_/?
@@ -508,11 +508,17 @@ Sub FOLDED_UPPER(ite As String)
             Return
     End Select
     LINE_CELLS ite, itemCount, slit & article, 1, 4
+    'Items under folding, consumption per mtr length of folded component
     If cellX(1) > 1 Then
-        If IsEmpty(Worksheets("BOM").Range("D" & cellX(0) + 1)) = False Then
-            LINE_CELLS ite, itemCount, Worksheets("BOM").Range("D" & cellX(0) + 1), Worksheets("BOM").cellS(cellX(0) + 1, 7 + siz), 4
-        End If
+        i = cellX(0) + 1
+        j = cellX(0) + cellX(1) - 1
+        For k = i To j
+            If IsEmpty(Worksheets("BOM").Range("D" & k)) = False Then
+                LINE_CELLS ite, itemCount, Worksheets("BOM").Range("D" & k), Worksheets("BOM").cellS(k, 7 + siz), 4
+            End If
+        Next k
     End If
+   
     row_count = row_count + itemCount
     itemCount = 0
      LINE_CELLS slit & article, itemCount, Worksheets("BOM").Range("D" & cellX(0)), Worksheets("BOM").cellS(cellX(0), 7 + siz), 4
