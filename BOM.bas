@@ -490,7 +490,7 @@ Sub FOLDED_UPPER(ite As String)
             slit = "4-scf-"
         Case "4-fcm1-" & article
             cellX = CELL_X("FCM1")
-            slit = "4-scf2-"
+            slit = "4-scf1-"
         Case "4-fcm2-" & article
             cellX = CELL_X("FCM2")
             slit = "4-scf2-"
@@ -675,7 +675,7 @@ Sub SOLE_ITEMS()
         BOM_CELLS "MID SOLE[c]", "6-CHM-0019", "PIGMENT KC 1871 WHITE", 3 / 175 * Worksheets("BOM").Range("F" & 1 + C_LOOK("SOLE", "B")).Value, 3 / 175 * Worksheets("BOM").Range("G" & 1 + C_LOOK("SOLE", "B")).Value, 3 / 175 * Worksheets("BOM").Range("H" & 1 + C_LOOK("SOLE", "B")).Value, 3 / 175 * Worksheets("BOM").Range("I" & 1 + C_LOOK("SOLE", "B")).Value, 3 / 175 * Worksheets("BOM").Range("J" & 1 + C_LOOK("SOLE", "B")).Value
         BOM_CELLS "IMC -WH", "6-CHM-0156", "Water Base IMC White KB 4505", 0.005, 0.005, 0.005, 0.005, 0.005
         BOM_CELLS "WB 07A", "6-CHM-0126", "RELEASE AGENT W.B 711/07A", 0.001, 0.001, 0.001, 0.001, 0.001
-        BOM_CELLS "1602", "6-CHM-0010", "RELEASE AGENT KECK  1602/18", 0.001, 0.001, 0.001, 0.001, 0.001
+        BOM_CELLS "1602", "6-CHM-0010", "RELEASE AGENT KECKï¿½ 1602/18", 0.001, 0.001, 0.001, 0.001, 0.001
     'DOUBLE COLOR
     ElseIf C_LOOK("2 COLOR", "C") > 0 Then
         BOM_CELLS "OUTTER SOLE", "4-PUX-0004", Worksheets("BOM").Range("E" & C_LOOK("SOLE", "B")).Value, Worksheets("BOM").Range("F" & C_LOOK("SOLE", "B")).Value, Worksheets("BOM").Range("G" & C_LOOK("SOLE", "B")).Value, Worksheets("BOM").Range("H" & C_LOOK("SOLE", "B")).Value, Worksheets("BOM").Range("I" & C_LOOK("SOLE", "B")).Value, Worksheets("BOM").Range("J" & C_LOOK("SOLE", "B")).Value
@@ -684,7 +684,7 @@ Sub SOLE_ITEMS()
         BOM_CELLS "MID SOLE[c]", "6-CHM-0019", "PIGMENT KC 1871 WHITE", 3 / 154 * Worksheets("BOM").Range("F" & 1 + C_LOOK("SOLE", "B")).Value, 3 / 154 * Worksheets("BOM").Range("G" & 1 + C_LOOK("SOLE", "B")).Value, 3 / 154 * Worksheets("BOM").Range("H" & 1 + C_LOOK("SOLE", "B")).Value, 3 / 154 * Worksheets("BOM").Range("I" & 1 + C_LOOK("SOLE", "B")).Value, 3 / 154 * Worksheets("BOM").Range("J" & 1 + C_LOOK("SOLE", "B")).Value
         BOM_CELLS "IMC -WH", "6-CHM-0156", "Water Base IMC White KB 4505", 0.004, 0.004, 0.004, 0.004, 0.004
         BOM_CELLS "WB 07A", "6-CHM-0126", "RELEASE AGENT W.B 711/07A", 0.001, 0.001, 0.001, 0.001, 0.001
-        BOM_CELLS "1602", "6-CHM-0010", "RELEASE AGENT KECK  1602/18", 0.001, 0.001, 0.001, 0.001, 0.001
+        BOM_CELLS "1602", "6-CHM-0010", "RELEASE AGENT KECKï¿½ 1602/18", 0.001, 0.001, 0.001, 0.001, 0.001
         
     Else:
         BOM_CELLS "OUTTER SOLE", "4-PUX-0004", Worksheets("BOM").Range("E" & C_LOOK("SOLE", "B")).Value, Worksheets("BOM").Range("F" & C_LOOK("SOLE", "B")).Value, Worksheets("BOM").Range("G" & C_LOOK("SOLE", "B")).Value, Worksheets("BOM").Range("H" & C_LOOK("SOLE", "B")).Value, Worksheets("BOM").Range("I" & C_LOOK("SOLE", "B")).Value, Worksheets("BOM").Range("J" & C_LOOK("SOLE", "B")).Value
