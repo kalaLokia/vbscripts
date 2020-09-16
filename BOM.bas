@@ -1,5 +1,5 @@
 Attribute VB_Name = "BOM"
-'Version 0.7.260820 blaze : supports both shoes and slippers
+'Version 0.8.160920 blaze : Only cases support, supports both shoes and slippers
 'A MACRO from, FORTUNE ELASTOMERS BRANCH, KINALOOR #OM-DEPT
 'Created by kalaLokia #4442   ;-)
 'DISCLAIMER: USE IT ON YOUR OWN RISK, DO NOT BLAME ON US ?\_(?)_/?
@@ -34,15 +34,19 @@ Sub BOM()
     If Worksheets("BOM").Range("D6").Value = "SHOES" Then
         brandSize = brandSize & "_SHOES"
     End If
-    If artBrand = "SMARTAK" Then
-        brandSize = artCat & brandSize & "_SMART"
+    If UCase(Worksheets("BOM").Range("E7").Value) = "ONLY" Then
+        brandSize = "ONLY_CASES"
     End If
     scCount = MC_ITEMS(brandSize) 'small carton counts in mc
 
 
 'Master Carton - MC
     If C_LOOK("MC", "B") > 0 Then
-        MASTER_CARTON "2-fb-" & article
+        If UCase(Worksheets("BOM").Range("E7").Value) = "ONLY" Then
+            MASTER_CARTON_ONLY "2-fb-" & article
+        Else:
+            MASTER_CARTON "2-fb-" & article
+        End If
     End If
 'SC
      If C_LOOK("SC", "B") > 0 Then
@@ -141,7 +145,29 @@ Sub MASTER_CARTON(ite As String)
     LINE_CELLS ite & scCount(6), itemCount, "FGMC-OH", scCount(i), 290
     row_count = row_count + itemCount
 End Sub
-
+'Master Carton - MC Only cases
+Sub MASTER_CARTON_ONLY(ite As String)
+    
+    cellX = CELL_X("MC")
+    For i = 0 To siz
+        
+        If artSize(0) + i = 10 Then
+            cs = artCat & "B0"
+        Else:
+            cs = artCat & "A" & (artSize(0) + i)
+        End If
+        itemCount = 0
+        LINE_CELLS ite & cs, itemCount, "3-fb-" & article & WorksheetFunction.Text(artSize(0) + i, "00"), scCount(0), "4"
+    
+        For j = 0 To cellX(1) - 1
+            If IsEmpty(Worksheets("BOM").Range("D" & cellX(0) + j).Value) = False Then
+                LINE_CELLS ite & cs, itemCount, Worksheets("BOM").Range("D" & cellX(0) + j), Worksheets("BOM").cellS(cellX(0) + j, 6), 4
+            End If
+        Next j
+        LINE_CELLS ite & cs, itemCount, "FGMC-OH", scCount(1), 290
+        row_count = row_count + itemCount
+    Next i
+End Sub
 'Small Carton - SC
 Sub SMALL_CARTON(ite As String)
     cellX = CELL_X("SC")
@@ -490,7 +516,7 @@ Sub FOLDED_UPPER(ite As String)
             slit = "4-scf-"
         Case "4-fcm1-" & article
             cellX = CELL_X("FCM1")
-            slit = "4-scf1-"
+            slit = "4-scf2-"
         Case "4-fcm2-" & article
             cellX = CELL_X("FCM2")
             slit = "4-scf2-"
@@ -675,7 +701,7 @@ Sub SOLE_ITEMS()
         BOM_CELLS "MID SOLE[c]", "6-CHM-0019", "PIGMENT KC 1871 WHITE", 3 / 175 * Worksheets("BOM").Range("F" & 1 + C_LOOK("SOLE", "B")).Value, 3 / 175 * Worksheets("BOM").Range("G" & 1 + C_LOOK("SOLE", "B")).Value, 3 / 175 * Worksheets("BOM").Range("H" & 1 + C_LOOK("SOLE", "B")).Value, 3 / 175 * Worksheets("BOM").Range("I" & 1 + C_LOOK("SOLE", "B")).Value, 3 / 175 * Worksheets("BOM").Range("J" & 1 + C_LOOK("SOLE", "B")).Value
         BOM_CELLS "IMC -WH", "6-CHM-0156", "Water Base IMC White KB 4505", 0.005, 0.005, 0.005, 0.005, 0.005
         BOM_CELLS "WB 07A", "6-CHM-0126", "RELEASE AGENT W.B 711/07A", 0.001, 0.001, 0.001, 0.001, 0.001
-        BOM_CELLS "1602", "6-CHM-0010", "RELEASE AGENT KECKï¿½ 1602/18", 0.001, 0.001, 0.001, 0.001, 0.001
+        BOM_CELLS "1602", "6-CHM-0010", "RELEASE AGENT KECK  1602/18", 0.001, 0.001, 0.001, 0.001, 0.001
     'DOUBLE COLOR
     ElseIf C_LOOK("2 COLOR", "C") > 0 Then
         BOM_CELLS "OUTTER SOLE", "4-PUX-0004", Worksheets("BOM").Range("E" & C_LOOK("SOLE", "B")).Value, Worksheets("BOM").Range("F" & C_LOOK("SOLE", "B")).Value, Worksheets("BOM").Range("G" & C_LOOK("SOLE", "B")).Value, Worksheets("BOM").Range("H" & C_LOOK("SOLE", "B")).Value, Worksheets("BOM").Range("I" & C_LOOK("SOLE", "B")).Value, Worksheets("BOM").Range("J" & C_LOOK("SOLE", "B")).Value
@@ -684,7 +710,7 @@ Sub SOLE_ITEMS()
         BOM_CELLS "MID SOLE[c]", "6-CHM-0019", "PIGMENT KC 1871 WHITE", 3 / 154 * Worksheets("BOM").Range("F" & 1 + C_LOOK("SOLE", "B")).Value, 3 / 154 * Worksheets("BOM").Range("G" & 1 + C_LOOK("SOLE", "B")).Value, 3 / 154 * Worksheets("BOM").Range("H" & 1 + C_LOOK("SOLE", "B")).Value, 3 / 154 * Worksheets("BOM").Range("I" & 1 + C_LOOK("SOLE", "B")).Value, 3 / 154 * Worksheets("BOM").Range("J" & 1 + C_LOOK("SOLE", "B")).Value
         BOM_CELLS "IMC -WH", "6-CHM-0156", "Water Base IMC White KB 4505", 0.004, 0.004, 0.004, 0.004, 0.004
         BOM_CELLS "WB 07A", "6-CHM-0126", "RELEASE AGENT W.B 711/07A", 0.001, 0.001, 0.001, 0.001, 0.001
-        BOM_CELLS "1602", "6-CHM-0010", "RELEASE AGENT KECKï¿½ 1602/18", 0.001, 0.001, 0.001, 0.001, 0.001
+        BOM_CELLS "1602", "6-CHM-0010", "RELEASE AGENT KECK  1602/18", 0.001, 0.001, 0.001, 0.001, 0.001
         
     Else:
         BOM_CELLS "OUTTER SOLE", "4-PUX-0004", Worksheets("BOM").Range("E" & C_LOOK("SOLE", "B")).Value, Worksheets("BOM").Range("F" & C_LOOK("SOLE", "B")).Value, Worksheets("BOM").Range("G" & C_LOOK("SOLE", "B")).Value, Worksheets("BOM").Range("H" & C_LOOK("SOLE", "B")).Value, Worksheets("BOM").Range("I" & C_LOOK("SOLE", "B")).Value, Worksheets("BOM").Range("J" & C_LOOK("SOLE", "B")).Value
@@ -880,6 +906,14 @@ Function MC_ITEMS(SIZEE As String) As Integer()
                 sc_count(4) = 6
                 sc_count(5) = 0
                 sc_count(6) = 2
+            Case "ONLY_CASES"
+                sc_count(0) = 24
+                sc_count(1) = 24
+                sc_count(2) = 0
+                sc_count(3) = 0
+                sc_count(4) = 0
+                sc_count(5) = 0
+                sc_count(6) = 0
             Case Else
                 sc_count(0) = 0
                 sc_count(1) = 0
