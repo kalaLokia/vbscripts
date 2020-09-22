@@ -56,7 +56,7 @@ Sub CLICK_ENTRY()
     For i = 1 To ccp_n
         ARTICLENO = Worksheets("CLICKING").Range("D" & ccp_s).Value
         ARTCOL = COLOR(Worksheets("CLICKING").Range("E" & ccp_s).Value)
-        ARTICLEMODEL = ARTICLENO & "-" & ARTCOL & "-" & Worksheets("CLICKING").Range("F" & ccs_s).Value
+        ARTICLEMODEL = ARTICLENO & "-" & ARTCOL & "-" & Worksheets("CLICKING").Range("F" & ccp_s).Value
         JOBNUM = Worksheets("CLICKING").Range("C" & ccp_s).Value
         'If IsEmpty(ARTICLENO) = False Then 'CHANCE TO FORGET TYPING ARTICLE NUMBER, SO EXCLUDED THIS IF STATEMENT
         
