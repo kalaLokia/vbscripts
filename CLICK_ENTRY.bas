@@ -81,21 +81,27 @@ Sub CLICK_ENTRY()
 '##################################################################################################################################################
     n = n + 2
 
-    Dim arr, common_size As Variant
-    'ARTICLES WITH CCP1 INSTEAD CCS
-    arr = Split("3290,3791,D4003,3780,8180", ",")
+    Dim arr, common_size, both_ccp1_ccs As Variant
+    'ARTICLES WITH CCP1
+    arr = Split("3290,3791,D4003,3780,8180,3059,1234", ",")
     'ARTICLE HAVING COMMON SIZE IN
-    common_size = Split("3290,3780", ",")
+    common_size = Split("3290,3780,3059", ",")
+    'ARTICLES HAVING BOTH CCP1 and CCS
+    both_ccp1_ccs = Split("3059,8170", ",")
+    'ARTICLE HAVING CCF
+    ccf_article = Split("8170", ",")
 
     For i = 1 To ccs_n
         ARTICLENO = Worksheets("CLICKING").Range("D" & ccs_s).Value
         ARTCOL = COLOR(Worksheets("CLICKING").Range("E" & ccs_s).Value)
         ARTICLEMODEL = ARTICLENO & "-" & ARTCOL & "-" & Worksheets("CLICKING").Range("F" & ccs_s).Value
         JOBNUM = Worksheets("CLICKING").Range("C" & ccs_s).Value
-    
+        
         'If IsEmpty(ARTICLENO) = False Then 'CHANCE TO FORGET TYPING ARTICLE NUMBER, SO EXCLUDED THIS IF STATEMENT
             If UBound(Filter(arr, UCase(ARTICLENO))) = 0 Then
                 ccs_t = "4-CCP1-"
+            ElseIf UBound(Filter(ccf_article, UCase(ARTICLENO))) = 0 Then
+                ccs_t = "4-CCF-"
             Else:
                 ccs_t = "4-CCS-"
             End If
@@ -110,6 +116,7 @@ Sub CLICK_ENTRY()
                 Worksheets("datas").Range("I" & n).Value = Worksheets("CLICKING").Range("U" & ccs_s).Value
                 Worksheets("datas").Range("J" & n).Value = "=CLICKING!$T$" & ccs_s
                 n = n + 1
+                
             Else:
                 For j = 1 To 13
                     If IsEmpty(Worksheets("CLICKING").cellS(ccs_s, j + 6).Value) = False Or Worksheets("CLICKING").cellS(ccs_s, j + 6).Value <> 0 Then
@@ -117,15 +124,38 @@ Sub CLICK_ENTRY()
                         Worksheets("datas").Range("A" & n).Value = j
                         Worksheets("datas").Range("B" & n).Value = JOBNUM
                         Worksheets("datas").Range("C" & n).Value = ccs_t & ARTICLEMODEL & WorksheetFunction.Text(j, "00")
-                        Worksheets("datas").Range("I" & n).Value = Worksheets("CLICKING").cellS(ccs_s, j + 6)
-                        Worksheets("datas").Range("J" & n).Value = "=CLICKING!$T$" & ccs_s
                         Worksheets("datas").Range("D" & n).Value = "=I" & n & "*J" & n
                         Worksheets("datas").Range("E" & n).Value = "FB/CF001"
                         Worksheets("datas").Range("F" & n).Value = "FB/CF001"
+                        Worksheets("datas").Range("I" & n).Value = Worksheets("CLICKING").cellS(ccs_s, j + 6)
+                        Worksheets("datas").Range("J" & n).Value = "=CLICKING!$T$" & ccs_s
+                        
                         n = n + 1
                     End If
                 Next j
             End If
+            
+'#############    IF ARTICLE HAS BOTH CCP1 & CCS
+            If UBound(Filter(both_ccp1_ccs, UCase(ARTICLENO))) = 0 Then
+                ccs_t = "4-CCS-"
+                For j = 1 To 13
+                    If IsEmpty(Worksheets("CLICKING").cellS(ccs_s, j + 6).Value) = False Or Worksheets("CLICKING").cellS(ccs_s, j + 6).Value <> 0 Then
+                
+                        Worksheets("datas").Range("A" & n).Value = j
+                        Worksheets("datas").Range("B" & n).Value = JOBNUM
+                        Worksheets("datas").Range("C" & n).Value = ccs_t & ARTICLEMODEL & WorksheetFunction.Text(j, "00")
+                        Worksheets("datas").Range("D" & n).Value = "=I" & n & "*J" & n
+                        Worksheets("datas").Range("E" & n).Value = "FB/CF001"
+                        Worksheets("datas").Range("F" & n).Value = "FB/CF001"
+                        Worksheets("datas").Range("I" & n).Value = Worksheets("CLICKING").cellS(ccs_s, j + 6)
+                        Worksheets("datas").Range("J" & n).Value = "=CLICKING!$T$" & ccs_s
+                        
+                        n = n + 1
+                    End If
+                Next j
+            End If
+'#######################################
+            
         ccs_s = ccs_s + 1
         'End If
     Next i
@@ -173,6 +203,12 @@ Function COLOR(colour As String)
         col = "MH"
         Case "PEACH"
         col = "PH"
+        Case "WK"
+        col = "WK"
+        Case "OV"
+        col = "OV"
+        Case "OLIVE"
+        col = "OV"
         Case "SK BLACK"
         col = "SK"
         Case "TAN BLACK"
@@ -189,6 +225,8 @@ Function COLOR(colour As String)
         col = "SA"
         Case "NR"
         col = "NR"
+        Case "NG"
+        col = "NG"
         Case "SK"
         col = "SK"
         Case "BK"
@@ -233,6 +271,10 @@ Function COLOR(colour As String)
         col = "MH"
         Case "SE"
         col = "SE"
+        Case "NY"
+        col = "NY"
+        Case "LY"
+        col = "LY"
         Case Else
         col = "NOT-FOUND"
     End Select
