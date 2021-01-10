@@ -66,32 +66,57 @@ End Property
 
 ' Getting SAP article model
 Public Function Article() As String
-     Article = c_artno & "-" & c_color & "-" & c_category
+        Article = c_artno & "-" & c_color & "-" & c_category
 End Function
 
+' Differentiate between Gents vs Kids
 Public Function ArticleCategory() As String
     If c_category = "B" Then
         ArticleCategory = c_artno & c_category
     Else:
         ArticleCategory = c_artno
+    End If
+End Function
+
+' Getting SAP CLK item code for the article
+Public Function ArticleItem(Optional ByVal sSize As Integer = 0) As String
+    Select Case c_process & "-" & c_artno & "-" & c_category & sSize
+        Case "CCS-3391-B0"
+        ArticleItem = "3391-NB-G"
+        Case "CCS-3391-B1"
+        ArticleItem = "3391-NB-B"
+        Case "CCS-3391-B2"
+        ArticleItem = "3391-NB-B"
+        Case "CCS-3391-B3"
+        ArticleItem = "3391-NB-B"
+        Case "CCS-3391-B4"
+        ArticleItem = "3391-NB-B"
+        Case "CCS-3391-B5"
+        ArticleItem = "3391-NB-B"
+        Case Else
+        ArticleItem = Article
+    End Select
 End Function
 
 ' Writting to sheet datas
-Public Sub WriteToSheet(rowNo As Integer, colNo As Integer,  Optional ByVal sSize As Integer = 0 )
+Public Sub WriteToSheet(rowNo As Integer, colNo As Integer,  Optional ByVal sSize As Integer = 0)
      Worksheets(target_sheet).Range("A" & rowNo).Value = sSize
      Worksheets(target_sheet).Range("B" & rowNo).Value = c_jobno
      
      Worksheets(target_sheet).Range("E" & rowNo).Value = "FB/CF001"
      Worksheets(target_sheet).Range("F" & rowNo).Value = "FB/CF001"
-     Worksheets(target_sheet).Range("I" & rowNo).Value = Worksheets("CLICKING").Cells(colNo, sSize + 6)
+     Worksheets(target_sheet).Range("G" & rowNo).Value = Article
+     
      Worksheets(target_sheet).Range("J" & rowNo).Value = "=CLICKING!$T$" & colNo
 
      if sSize = 0 Then
-          Worksheets(target_sheet).Range("C" & rowNo).Value = "4-"& c_process & "-" & Article 
+          Worksheets(target_sheet).Range("C" & rowNo).Value = "4-"& c_process & "-" & ArticleItem(sSize)
           Worksheets(target_sheet).Range("D" & rowNo).Value = Worksheets("CLICKING").Range("U" & colNo).Value
+          Worksheets(target_sheet).Range("I" & rowNo).Value = Worksheets("CLICKING").Range("U" & colNo).Value
      Else:
-          Worksheets(target_sheet).Range("C" & rowNo).Value = "4-"& c_process & "-" & Article & WorksheetFunction.Text(sSize, "00")
+          Worksheets(target_sheet).Range("C" & rowNo).Value = "4-"& c_process & "-" & ArticleItem(sSize) & WorksheetFunction.Text(sSize, "00")
           Worksheets(target_sheet).Range("D" & rowNo).Value = "=I" & rowNo & "*J" & rowNo
+          Worksheets(target_sheet).Range("I" & rowNo).Value = Worksheets("CLICKING").Cells(colNo, sSize + 6)
      End if
      
 End Sub
