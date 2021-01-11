@@ -19,28 +19,28 @@ Public Property Get Artno() As String
     Artno = c_artno
 End Property
 Public Property Let Artno(ByVal sArtno As String)
-    c_artno = Ucase(sArtno)
+    c_artno = UCase(sArtno)
 End Property
 
 Public Property Get Color() As String
     Color = c_color
 End Property
 Public Property Let Color(ByVal sColor As String)
-    c_color = Ucase(sColor)
+    c_color = UCase(sColor)
 End Property
 
 Public Property Get Category() As String
     Category = c_category
 End Property
 Public Property Let Category(ByVal sCategory As String)
-    c_category = Ucase(sCategory)
+    c_category = UCase(sCategory)
 End Property
 
 Public Property Get Jobno() As String
     Jobno = c_jobno
 End Property
 Public Property Let Jobno(ByVal sJobno As String)
-    c_jobno = Ucase(sJobno)
+    c_jobno = UCase(sJobno)
 End Property
 
 Public Property Get Plan() As Long
@@ -99,8 +99,9 @@ Public Function ArticleItem(Optional ByVal sSize As Integer = 0) As String
 End Function
 
 ' Writting to sheet datas
-Public Sub WriteToSheet(rowNo As Integer, colNo As Integer,  Optional ByVal sSize As Integer = 0)
-     Worksheets(target_sheet).Range("A" & rowNo).Value = sSize
+Public Sub WriteToSheet(rowNo As Integer, colNo As Integer, Optional ByVal sSize As Integer = 0)
+    
+    Worksheets(target_sheet).Range("A" & rowNo).Value = sSize
      Worksheets(target_sheet).Range("B" & rowNo).Value = c_jobno
      
      Worksheets(target_sheet).Range("E" & rowNo).Value = "FB/CF001"
@@ -109,21 +110,21 @@ Public Sub WriteToSheet(rowNo As Integer, colNo As Integer,  Optional ByVal sSiz
      
      Worksheets(target_sheet).Range("J" & rowNo).Value = "=CLICKING!$T$" & colNo
 
-     if sSize = 0 Then
-          Worksheets(target_sheet).Range("C" & rowNo).Value = "4-"& c_process & "-" & ArticleItem(sSize)
+     If sSize = 0 Then
+          Worksheets(target_sheet).Range("C" & rowNo).Value = "4-" & c_process & "-" & ArticleItem(sSize)
           Worksheets(target_sheet).Range("D" & rowNo).Value = Worksheets("CLICKING").Range("U" & colNo).Value
           Worksheets(target_sheet).Range("I" & rowNo).Value = Worksheets("CLICKING").Range("U" & colNo).Value
      Else:
-          Worksheets(target_sheet).Range("C" & rowNo).Value = "4-"& c_process & "-" & ArticleItem(sSize) & WorksheetFunction.Text(sSize, "00")
+          Worksheets(target_sheet).Range("C" & rowNo).Value = "4-" & c_process & "-" & ArticleItem(sSize) & WorksheetFunction.Text(sSize, "00")
           Worksheets(target_sheet).Range("D" & rowNo).Value = "=I" & rowNo & "*J" & rowNo
-          Worksheets(target_sheet).Range("I" & rowNo).Value = Worksheets("CLICKING").Cells(colNo, sSize + 6)
-     End if
+          Worksheets(target_sheet).Range("I" & rowNo).Value = Worksheets("CLICKING").cellS(colNo, sSize + 6)
+     End If
      
 End Sub
 
 'Write headers to the datas sheet
 Public Sub WriteHeaders()
-     Worksheets(target_sheet).Range("B1").Value = "SIZE"
+     Worksheets(target_sheet).Range("A1").Value = "SIZE"
      Worksheets(target_sheet).Range("B1").Value = "JOB NO."
      Worksheets(target_sheet).Range("C1").Value = "SAP ITEM CODE"
      Worksheets(target_sheet).Range("D1").Value = "QTY"
@@ -133,3 +134,4 @@ Public Sub WriteHeaders()
      Worksheets(target_sheet).Range("J1").Value = "plan"
 End Sub
 
+' Created by kalaLokia

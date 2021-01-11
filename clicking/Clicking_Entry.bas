@@ -1,4 +1,5 @@
-Sub CLICK_ENTRY()
+
+Sub CLICK_ENTRY_NEW()
     Dim ccu_i As Integer
     Dim cci_i As Integer
     Dim ccu_n As Integer
@@ -7,12 +8,12 @@ Sub CLICK_ENTRY()
     Dim n As Integer
 
     Dim oClick As New clsClicking
-    Worksheets("datas").Cells.Clear    'Clearing all data on the "datas" sheet before writing out
+    Worksheets("datas").cellS.Clear    'Clearing all data on the "datas" sheet before writing out
     
     With Worksheets("CLICKING")
     'Checking Insole, Upper entries
         On Error Resume Next
-            cci_i = Application.WorksheetFunction.Match("INSOLE", .Range("B:B"), 0)
+            cci_i = Application.WorksheetFunction.MATCH("INSOLE", .Range("B:B"), 0)
         On Error GoTo 0
         
         If cci_i <> 0 Then
@@ -23,7 +24,7 @@ Sub CLICK_ENTRY()
         End If
         
         On Error Resume Next
-            ccu_i = Application.WorksheetFunction.Match("UPPER", .Range("B:B"), 0)
+            ccu_i = Application.WorksheetFunction.MATCH("UPPER", .Range("B:B"), 0)
         On Error GoTo 0
         
         If ccu_i <> 0 Then
@@ -39,7 +40,7 @@ Sub CLICK_ENTRY()
     n = 3
 
     For i = 1 To cci_n
-        If WorksheetFunction.SUM(Range("G" & i & ":S" & i)) > 0 Then
+        If Worksheets("CLICKING").Range("U" & ccu_i).Value > 0 Then
             oClick.Process = "CCP"
             oClick.Artno = Worksheets("CLICKING").Range("D" & cci_i).Value
             oClick.Color = Worksheets("CLICKING").Range("E" & cci_i).Value
@@ -49,7 +50,7 @@ Sub CLICK_ENTRY()
             oClick.Plan = Worksheets("CLICKING").Range("T" & cci_i).Value
             
             For j = 1 To 13
-                If IsEmpty(Worksheets("CLICKING").Cells(cci_i, j + 6).Value) = False Or Worksheets("CLICKING").Cells(cci_i, j + 6).Value <> 0 Then
+                If IsEmpty(Worksheets("CLICKING").cellS(cci_i, j + 6).Value) = False Or Worksheets("CLICKING").cellS(cci_i, j + 6).Value <> 0 Then
                     oClick.WriteToSheet rowNo:=n, colNo:=cci_i, sSize:=j
                     n = n + 1
                 End If
@@ -76,7 +77,7 @@ Sub CLICK_ENTRY()
 
     For i = 1 To ccu_n
     
-        If WorksheetFunction.SUM(Range("G" & i & ":S" & i)) > 0 Then
+        If Worksheets("CLICKING").Range("U" & ccu_i).Value > 0 Then
             oClick.Artno = Worksheets("CLICKING").Range("D" & ccu_i).Value
             oClick.Color = Worksheets("CLICKING").Range("E" & ccu_i).Value
             oClick.Category = Worksheets("CLICKING").Range("F" & ccu_i).Value
@@ -85,32 +86,32 @@ Sub CLICK_ENTRY()
             oClick.Plan = Worksheets("CLICKING").Range("T" & ccu_i).Value
             
             ' Common sized CCP1
-            If UBound(Filter(pxCCP1, oClick.ArticleCategory)) = 0 Then
+            If MatchUp(pxCCP1, oClick.ArticleCategory) Then
                 oClick.Process = "CCP1"
                 oClick.WriteToSheet rowNo:=n, colNo:=ccu_i
                 n = n + 1
             End If
 
             ' Common sized CCS
-            If UBound(Filter(pxCCS, oClick.ArticleCategory)) = 0 Then
+            If MatchUp(pxCCS, oClick.ArticleCategory) Then
                 oClick.Process = "CCS"
                 oClick.WriteToSheet rowNo:=n, colNo:=ccu_i
                 n = n + 1
             End If
 
             ' CCP1 or CCF process
-            If UBound(Filter(pCCP1, oClick.ArticleCategory)) = 0 Then
+            If MatchUp(pCCP1, oClick.ArticleCategory) Then
                 oClick.Process = "CCP1"
                 For j = 1 To 13
-                    If IsEmpty(Worksheets("CLICKING").Cells(ccu_i, j + 6).Value) = False Or Worksheets("CLICKING").Cells(ccu_i, j + 6).Value <> 0 Then
+                    If IsEmpty(Worksheets("CLICKING").cellS(ccu_i, j + 6).Value) = False Or Worksheets("CLICKING").cellS(ccu_i, j + 6).Value <> 0 Then
                         oClick.WriteToSheet rowNo:=n, colNo:=ccu_i, sSize:=j
                         n = n + 1
                     End If
                 Next j
-            ElseIf UBound(Filter(pCCF, oClick.ArticleCategory)) = 0 Then
+            ElseIf MatchUp(pCCF, oClick.ArticleCategory) Then
                 oClick.Process = "CCF"
                 For j = 1 To 13
-                    If IsEmpty(Worksheets("CLICKING").Cells(ccu_i, j + 6).Value) = False Or Worksheets("CLICKING").Cells(ccu_i, j + 6).Value <> 0 Then
+                    If IsEmpty(Worksheets("CLICKING").cellS(ccu_i, j + 6).Value) = False Or Worksheets("CLICKING").cellS(ccu_i, j + 6).Value <> 0 Then
                         oClick.WriteToSheet rowNo:=n, colNo:=ccu_i, sSize:=j
                         n = n + 1
                     End If
@@ -120,10 +121,10 @@ Sub CLICK_ENTRY()
             
 
             ' Articles having CCS
-            If UBound(Filter(pNoCCS, oClick.ArticleCategory)) <> 0 Then
+            If MatchUp(pNoCCS, oClick.ArticleCategory) = False Then
                 oClick.Process = "CCS"
                 For j = 1 To 13
-                    If IsEmpty(Worksheets("CLICKING").Cells(ccu_i, j + 6).Value) = False Or Worksheets("CLICKING").Cells(ccu_i, j + 6).Value <> 0 Then
+                    If IsEmpty(Worksheets("CLICKING").cellS(ccu_i, j + 6).Value) = False Or Worksheets("CLICKING").cellS(ccu_i, j + 6).Value <> 0 Then
                         oClick.WriteToSheet rowNo:=n, colNo:=ccu_i, sSize:=j
                         n = n + 1
                     End If
@@ -133,5 +134,19 @@ Sub CLICK_ENTRY()
             ccu_i = ccu_i + 1
         End If
     Next i
-  
 End Sub
+
+' Looks up a string in an array
+Function MatchUp(arr As Variant, lookUpValue As String) As Boolean
+
+For Each element In arr
+    MatchUp = False
+    If StrComp(lookUpValue, element) = 0 Then
+        MatchUp = True
+        Exit For
+    End If
+Next
+    
+End Function
+
+' Created by kalaLokia
