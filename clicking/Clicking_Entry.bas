@@ -67,13 +67,13 @@ Sub CLICK_ENTRY_NEW()
     'Common CCP1
     pxCCP1 = Split("3290,3780,3059", ",")
     'Common CCS
-    pxCCS = Split("3391B", ",")
+    pxCCS = Split("3391B,3391", ",")
     'CCP1
     pCCP1 = Split("3791,D4003,8180", ",")
     'CCF
     pCCF = Split("8170", ",")
     'CCS aswell
-    pNoCCS = Split("3290,3780,3791,D4003,8180", ",")
+    pNoCCS = Split("3290,3780,3791,D4003,8180,3391", ",")
 
     For i = 1 To ccu_n
     

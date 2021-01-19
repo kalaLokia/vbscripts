@@ -80,19 +80,59 @@ End Function
 
 ' Getting SAP CLK item code for the article
 Public Function ArticleItem(Optional ByVal sSize As Integer = 0) As String
-    Select Case c_process & "-" & c_artno & "-" & c_category & sSize
-        Case "CCS-3391-B0"
+    Select Case c_process & "-" & c_artno & c_color & "-" & c_category & sSize
+        ' 3391 Boys angutta is same as 3391 N Blue Gents : CCS-3391-NB-G
+        Case "CCS-3391GR-B0"
         ArticleItem = "3391-NB-G"
-        Case "CCS-3391-B1"
+        Case "CCS-3391RD-B0"
+        ArticleItem = "3391-NB-G"
+        Case "CCS-3391GY-B0"
+        ArticleItem = "3391-NB-G"
+        Case "CCS-3391NB-B0"
+        ArticleItem = "3391-NB-G"
+
+        ' 3391 N Blue Gents angutta is common in all colors except for black : CCS-3391-NB-G
+        Case "CCS-3391GR-G0"
+        ArticleItem = "3391-NB-G"
+        Case "CCS-3391RD-G0"
+        ArticleItem = "3391-NB-G"
+        Case "CCS-3391GY-G0"
+        ArticleItem = "3391-NB-G"
+
+        ' Cushion Pad is common in all colors of 3391 boys article : CCS-3391-NB-B{size}
+        Case "CCS-3391GR-B1"
         ArticleItem = "3391-NB-B"
-        Case "CCS-3391-B2"
+        Case "CCS-3391GR-B2"
         ArticleItem = "3391-NB-B"
-        Case "CCS-3391-B3"
+        Case "CCS-3391GR-B3"
         ArticleItem = "3391-NB-B"
-        Case "CCS-3391-B4"
+        Case "CCS-3391GR-B4"
         ArticleItem = "3391-NB-B"
-        Case "CCS-3391-B5"
+        Case "CCS-3391GR-B5"
         ArticleItem = "3391-NB-B"
+
+        Case "CCS-3391RD-B1"
+        ArticleItem = "3391-NB-B"
+        Case "CCS-3391RD-B2"
+        ArticleItem = "3391-NB-B"
+        Case "CCS-3391RD-B3"
+        ArticleItem = "3391-NB-B"
+        Case "CCS-3391RD-B4"
+        ArticleItem = "3391-NB-B"
+        Case "CCS-3391RD-B5"
+        ArticleItem = "3391-NB-B"
+        
+        Case "CCS-3391GY-B1"
+        ArticleItem = "3391-NB-B"
+        Case "CCS-3391GY-B2"
+        ArticleItem = "3391-NB-B"
+        Case "CCS-3391GY-B3"
+        ArticleItem = "3391-NB-B"
+        Case "CCS-3391GY-B4"
+        ArticleItem = "3391-NB-B"
+        Case "CCS-3391GY-B5"
+        ArticleItem = "3391-NB-B"
+
         Case Else
         ArticleItem = Article
     End Select
