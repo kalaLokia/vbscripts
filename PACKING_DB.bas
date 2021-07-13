@@ -9,13 +9,17 @@ Sub PACKING_DB()
     Dim sht As excel.Worksheet
     Dim shet As excel.Worksheet
     Dim lookItem, lookUpValue, sc_raw, mc_raw As Variant
-    Dim title(10), items(10), itemDesc(10), msc(2) As Variant
+    Dim title(11), items(11), itemDesc(11), msc(2) As Variant
     Dim r As Integer
     
     sc_raw = MSC_LOOK("SC")
     mc_raw = MSC_LOOK("MC")
     
     lookUpValue = UCase(Worksheets("BOM").Range("D2") & "_" & Worksheets("BOM").Range("D5"))
+    If UCase(Worksheets("BOM").Range("D6")) = "SHOES" Then
+        lookUpValue = lookUpValue & "SHOE"
+    End If
+
     If IsEmpty(Worksheets("BOM").Range("D1")) = False Then
         lookUpValue = UCase(lookUpValue & Worksheets("BOM").Range("D1"))
     End If
@@ -37,36 +41,39 @@ Sub PACKING_DB()
         items(2) = hasValue(sht.cellS(lookItem, 5))     'BELT
         items(3) = hasValue(sht.cellS(lookItem, 6))     'ADH, TAPE
         items(4) = hasValue(sht.cellS(lookItem, 7))     'VENT. STICKER
-        items(5) = hasValue(sht.cellS(lookItem, 9))     'SC
-        items(6) = hasValue(sht.cellS(lookItem, 10))    'PRICE STICKER
-        items(7) = hasValue(sht.cellS(lookItem, 11))    'TAG LOOP
-        items(8) = hasValue(sht.cellS(lookItem, 12))    'TAG
-        items(9) = hasValue(sht.cellS(lookItem, 13))    'TISSUE PAPER
-        items(10) = hasValue(sht.cellS(lookItem, 14))   'SILICA GEL
+        items(5) = hasValue(sht.cellS(lookItem, 8))     'WEIGHT STICKER
+        items(6) = hasValue(sht.cellS(lookItem, 10))     'SC
+        items(7) = hasValue(sht.cellS(lookItem, 11))    'PRICE STICKER
+        items(8) = hasValue(sht.cellS(lookItem, 12))    'TAG LOOP
+        items(9) = hasValue(sht.cellS(lookItem, 13))    'TAG
+        items(10) = hasValue(sht.cellS(lookItem, 14))    'TISSUE PAPER
+        items(11) = hasValue(sht.cellS(lookItem, 15))   'SILICA GEL
         
         title(0) = hasValue(sht.cellS(1, 3))        'MC
         title(1) = hasValue(sht.cellS(1, 4))        'STICKER MC
         title(2) = hasValue(sht.cellS(1, 5))        'BELT
         title(3) = hasValue(sht.cellS(1, 6))        'ADH, TAPE
         title(4) = hasValue(sht.cellS(1, 7))        'VENT. STICKER
-        title(5) = hasValue(sht.cellS(1, 9))        'SC
-        title(6) = hasValue(sht.cellS(1, 10))       'PRICE STICKER
-        title(7) = hasValue(sht.cellS(1, 11))       'TAG LOOP
-        title(8) = hasValue(sht.cellS(1, 12))       'TAG
-        title(9) = hasValue(sht.cellS(1, 13))       'TISSUE PAPER
-        title(10) = hasValue(sht.cellS(1, 14))      'SILICA GEL
+        title(5) = hasValue(sht.cellS(1, 8))        'WEIGHT STICKER
+        title(6) = hasValue(sht.cellS(1, 10))        'SC
+        title(7) = hasValue(sht.cellS(1, 11))       'PRICE STICKER
+        title(8) = hasValue(sht.cellS(1, 12))       'TAG LOOP
+        title(9) = hasValue(sht.cellS(1, 13))       'TAG
+        title(10) = hasValue(sht.cellS(1, 14))       'TISSUE PAPER
+        title(11) = hasValue(sht.cellS(1, 15))      'SILICA GEL
     
         itemDesc(0) = isInDb(items(0), shet)     'MC
         itemDesc(1) = isInDb(items(1), shet)     'STICKER MC
         itemDesc(2) = isInDb(items(2), shet)     'BELT
         itemDesc(3) = isInDb(items(3), shet)     'ADH, TAPE
         itemDesc(4) = isInDb(items(4), shet)     'VENT. STICKER
-        itemDesc(5) = isInDb(items(5), shet)     'SC
-        itemDesc(6) = isInDb(items(6), shet)     'PRICE STICKER
-        itemDesc(7) = isInDb(items(7), shet)     'TAG LOOP
-        itemDesc(8) = isInDb(items(8), shet)     'TAG
-        itemDesc(9) = isInDb(items(9), shet)     'TISSUE PAPER
-        itemDesc(10) = isInDb(items(10), shet)    'SILICA GEL
+        itemDesc(5) = isInDb(items(5), shet)     'VENT. STICKER
+        itemDesc(6) = isInDb(items(6), shet)     'SC
+        itemDesc(7) = isInDb(items(7), shet)     'PRICE STICKER
+        itemDesc(8) = isInDb(items(8), shet)     'TAG LOOP
+        itemDesc(9) = isInDb(items(9), shet)     'TAG
+        itemDesc(10) = isInDb(items(10), shet)     'TISSUE PAPER
+        itemDesc(11) = isInDb(items(11), shet)    'SILICA GEL
         
     'Master box BELT and ADH. TAPE values
         If items(0) <> 0 Then
@@ -78,7 +85,7 @@ Sub PACKING_DB()
     'MC
     r = 0
     If mc_raw > 0 Then
-    For i = 0 To 4
+    For i = 0 To 5
        
         If items(i) > 0 Then
             Worksheets("BOM").Range("c" & mc_raw + r).Value = title(i)
@@ -102,7 +109,7 @@ Sub PACKING_DB()
     End If
     r = 0
     If sc_raw > 0 Then
-    For i = 5 To 10
+    For i = 6 To 11
         If items(i) > 0 Then
             Worksheets("BOM").Range("c" & sc_raw + r).Value = title(i)
             Worksheets("BOM").Range("d" & sc_raw + r).Value = items(i)
