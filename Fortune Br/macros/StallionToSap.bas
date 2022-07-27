@@ -1,11 +1,13 @@
 Attribute VB_Name = "StallionToSap"
+
 Sub StallionToSAP()
 
     Dim rowCount As Integer
-    rowCount = Worksheets("Sheet1").Range("B" & Rows.Count).End(xlUp).Row
+    rowCount = ActiveSheet.Range("B" & Rows.Count).End(xlUp).Row
     
     For i = 2 To rowCount
-        Worksheets("Sheet1").Range("D" & i).Value = ART_NO(Worksheets("Sheet1").Range("B" & i)) & "-" & COLOR(Worksheets("Sheet1").Range("B" & i)) & "-" & CATG(Worksheets("Sheet1").Range("B" & i)) & SIZEE(Worksheets("Sheet1").Range("B" & i))
+        ActiveSheet.Range("D" & i).Value = ART_NO(ActiveSheet.Range("B" & i)) & "-" & Color(ActiveSheet.Range("B" & i)) & "-" & CATG(ActiveSheet.Range("B" & i)) & SIZEE(ActiveSheet.Range("B" & i))
+        ActiveSheet.Range("E" & i).Value = ART_NO_WITH_EXP(ActiveSheet.Range("B" & i)) & "-" & Color(ActiveSheet.Range("B" & i)) & "-" & CATG(ActiveSheet.Range("B" & i)) & SIZEE(ActiveSheet.Range("B" & i))
     Next i
 
 
@@ -33,10 +35,11 @@ End Function
 
 'DO NOT TOUCH IN THIS CODE
 Function ART_NO(artic As String)
+artic = UCase(artic)
 Dim RE As Object
 Dim MATCH As Object
 Set RE = CreateObject("VBScript.regexp")
-RE.Pattern = "(\b(D|S|L|K)?\d{4})"
+RE.Pattern = "(\b(D|DG|DL|S|L|K|GP|LP|DX)?\d{4})"
 RE.Global = True
 RE.ignoreCase = False
 Set MATCH = RE.Execute(artic)
@@ -44,6 +47,22 @@ If MATCH.Count <> 0 Then
 result = MATCH.Item(0).submatches.Item(0)
 End If
 ART_NO = result
+End Function
+
+'DO NOT TOUCH IN THIS CODE
+Function ART_NO_WITH_EXP(artic As String)
+artic = UCase(artic)
+Dim RE As Object
+Dim MATCH As Object
+Set RE = CreateObject("VBScript.regexp")
+RE.Pattern = "(\b(D|DG|DL|S|L|K)?\d{4}Z?)"
+RE.Global = True
+RE.ignoreCase = False
+Set MATCH = RE.Execute(artic)
+If MATCH.Count <> 0 Then
+result = MATCH.Item(0).submatches.Item(0)
+End If
+ART_NO_WITH_EXP = result
 End Function
 
 
@@ -89,12 +108,12 @@ End Function
 
 
 'COLOR CODES IN HERE, ADD OR EDIT IS ALLOWED
-Function COLOR(colour As String)
+Function Color(colour As String)
 
 Dim RE As Object
 Dim MATCH As Object
 Set RE = CreateObject("VBScript.regexp")
-RE.Pattern = "(?!ZSP)([A-Z,a-z,-]{3,})"
+RE.Pattern = "(?!ZSP)([A-Z,a-z,.,-]{3,})"
 RE.Global = True
 RE.ignoreCase = True
 Set MATCH = RE.Execute(colour)
@@ -176,7 +195,8 @@ Case "N-BLUE-RED"
 col = "NR"
 Case "TAN-BRN"
 col = "TR"
-
+Case "CHERRY"
+col = "CH"
 Case "RD"
 col = "RD"
 Case "PK"
@@ -185,8 +205,12 @@ Case "TA"
 col = "TA"
 Case "PE"
 col = "PE"
+Case "N.BLU-RED"
+col = "NR"
+Case "N.BLU-GREY"
+col = "NG"
 Case "SBLACK"
-col = "TAN BRN"
+col = "SA"
 Case "TR"
 col = "SAND"
 Case "SD"
@@ -219,6 +243,6 @@ Case Else
 col = "NOT-FOUND"
 End Select
 
-COLOR = col
+Color = col
 End Function
 

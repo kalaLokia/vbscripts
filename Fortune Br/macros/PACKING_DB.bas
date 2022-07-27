@@ -1,5 +1,6 @@
 Attribute VB_Name = "PACKING_DB"
 ' Version 0.4
+' Created and modified by Sabareesh
 
 Sub PACKING_DB()
 
@@ -8,7 +9,7 @@ Sub PACKING_DB()
     Dim sht As excel.Worksheet
     Dim shet As excel.Worksheet
     Dim lookItem, lookUpValue, sc_raw, mc_raw As Variant
-    Dim title(11), items(11), itemDesc(11), msc(2) As Variant
+    Dim title(12), items(12), itemDesc(12), msc(2) As Variant
     Dim r As Integer
     
     sc_raw = MSC_LOOK("SC")
@@ -23,7 +24,6 @@ Sub PACKING_DB()
         lookUpValue = UCase(lookUpValue & Worksheets("BOM").Range("D1"))
     End If
 
-    
     Set excel = CreateObject("excel.Application")
     excel.Visible = False
     Set wb = excel.Workbooks.Open("E:\SOLID_DATA\PACKING_MATERIALS.xlsx")
@@ -41,12 +41,14 @@ Sub PACKING_DB()
         items(3) = hasValue(sht.cellS(lookItem, 6))     'ADH, TAPE
         items(4) = hasValue(sht.cellS(lookItem, 7))     'VENT. STICKER
         items(5) = hasValue(sht.cellS(lookItem, 8))     'WEIGHT STICKER
-        items(6) = hasValue(sht.cellS(lookItem, 10))     'SC
-        items(7) = hasValue(sht.cellS(lookItem, 11))    'PRICE STICKER
-        items(8) = hasValue(sht.cellS(lookItem, 12))    'TAG LOOP
-        items(9) = hasValue(sht.cellS(lookItem, 13))    'TAG
-        items(10) = hasValue(sht.cellS(lookItem, 14))    'TISSUE PAPER
-        items(11) = hasValue(sht.cellS(lookItem, 15))   'SILICA GEL
+        items(6) = hasValue(sht.cellS(lookItem, 9))     'Adh Gum
+        
+        items(7) = hasValue(sht.cellS(lookItem, 11))     'SC
+        items(8) = hasValue(sht.cellS(lookItem, 12))    'PRICE STICKER
+        items(9) = hasValue(sht.cellS(lookItem, 13))    'TAG LOOP
+        items(10) = hasValue(sht.cellS(lookItem, 14))    'TAG
+        items(11) = hasValue(sht.cellS(lookItem, 15))    'TISSUE PAPER
+        items(12) = hasValue(sht.cellS(lookItem, 16))   'SILICA GEL
         
         title(0) = hasValue(sht.cellS(1, 3))        'MC
         title(1) = hasValue(sht.cellS(1, 4))        'STICKER MC
@@ -54,12 +56,14 @@ Sub PACKING_DB()
         title(3) = hasValue(sht.cellS(1, 6))        'ADH, TAPE
         title(4) = hasValue(sht.cellS(1, 7))        'VENT. STICKER
         title(5) = hasValue(sht.cellS(1, 8))        'WEIGHT STICKER
-        title(6) = hasValue(sht.cellS(1, 10))        'SC
-        title(7) = hasValue(sht.cellS(1, 11))       'PRICE STICKER
-        title(8) = hasValue(sht.cellS(1, 12))       'TAG LOOP
-        title(9) = hasValue(sht.cellS(1, 13))       'TAG
-        title(10) = hasValue(sht.cellS(1, 14))       'TISSUE PAPER
-        title(11) = hasValue(sht.cellS(1, 15))      'SILICA GEL
+        title(6) = hasValue(sht.cellS(1, 9))        'ADH. GUM
+        
+        title(7) = hasValue(sht.cellS(1, 11))        'SC
+        title(8) = hasValue(sht.cellS(1, 12))       'PRICE STICKER
+        title(9) = hasValue(sht.cellS(1, 13))       'TAG LOOP
+        title(10) = hasValue(sht.cellS(1, 14))       'TAG
+        title(11) = hasValue(sht.cellS(1, 15))       'TISSUE PAPER
+        title(12) = hasValue(sht.cellS(1, 16))      'SILICA GEL
     
         itemDesc(0) = isInDb(items(0), shet)     'MC
         itemDesc(1) = isInDb(items(1), shet)     'STICKER MC
@@ -67,36 +71,39 @@ Sub PACKING_DB()
         itemDesc(3) = isInDb(items(3), shet)     'ADH, TAPE
         itemDesc(4) = isInDb(items(4), shet)     'VENT. STICKER
         itemDesc(5) = isInDb(items(5), shet)     'VENT. STICKER
-        itemDesc(6) = isInDb(items(6), shet)     'SC
-        itemDesc(7) = isInDb(items(7), shet)     'PRICE STICKER
-        itemDesc(8) = isInDb(items(8), shet)     'TAG LOOP
-        itemDesc(9) = isInDb(items(9), shet)     'TAG
-        itemDesc(10) = isInDb(items(10), shet)     'TISSUE PAPER
-        itemDesc(11) = isInDb(items(11), shet)    'SILICA GEL
+        itemDesc(6) = isInDb(items(6), shet)     'ADH. GUM
+        
+        itemDesc(7) = isInDb(items(7), shet)     'SC
+        itemDesc(8) = isInDb(items(8), shet)     'PRICE STICKER
+        itemDesc(9) = isInDb(items(9), shet)     'TAG LOOP
+        itemDesc(10) = isInDb(items(10), shet)     'TAG
+        itemDesc(11) = isInDb(items(11), shet)     'TISSUE PAPER
+        itemDesc(12) = isInDb(items(12), shet)    'SILICA GEL
         
     'Master box BELT and ADH. TAPE values
         If items(0) <> 0 Then
-            msc(0) = shet.cellS(db_LOOK(items(0), shet), 6)
-            msc(1) = shet.cellS(db_LOOK(items(0), shet), 7)
+            msc(0) = shet.cellS(db_LOOK(items(0), shet), 4)
+            msc(1) = shet.cellS(db_LOOK(items(0), shet), 5)
         End If
       
     wb.Close SaveChanges:=False
     'MC
     r = 0
     If mc_raw > 0 Then
-    For i = 0 To 5
+    For i = 0 To 6
        
         If items(i) > 0 Then
-            Worksheets("BOM").Range("c" & mc_raw + r).Value = title(i)
-            Worksheets("BOM").Range("d" & mc_raw + r).Value = items(i)
-            Worksheets("BOM").Range("e" & mc_raw + r).Value = itemDesc(i)
-            If Worksheets("BOM").Range("d" & mc_raw + r).Value = "7-AT-0015" Then
-                 Worksheets("BOM").Range("f" & mc_raw + r).Value = msc(1)
-            ElseIf Worksheets("BOM").Range("d" & mc_raw + r).Value = "7-BT-0001" Then
-                Worksheets("BOM").Range("f" & mc_raw + r).Value = msc(0)
-    
+            Worksheets("BOM").Range("c" & mc_raw + r).value = title(i)
+            Worksheets("BOM").Range("d" & mc_raw + r).value = items(i)
+            Worksheets("BOM").Range("e" & mc_raw + r).value = itemDesc(i)
+            If Worksheets("BOM").Range("d" & mc_raw + r).value = "7-AT-0015" Then
+                 Worksheets("BOM").Range("f" & mc_raw + r).value = msc(1)
+            ElseIf Worksheets("BOM").Range("d" & mc_raw + r).value = "7-BT-0001" Then
+                Worksheets("BOM").Range("f" & mc_raw + r).value = msc(0)
+            ElseIf items(i) = "6-ADH-0076" Then 'GUM USED ON MASTER CARTON
+                Worksheets("BOM").Range("f" & mc_raw + r).value = 0.035
             Else:
-            Worksheets("BOM").Range("f" & mc_raw + r).Value = 1
+            Worksheets("BOM").Range("f" & mc_raw + r).value = 1 '# Default consumption for MC item
             End If
             'If i > 0 Then
              '   Worksheets("BOM").Range("f" & mc_raw + 2).Value = msc(0)
@@ -108,17 +115,17 @@ Sub PACKING_DB()
     End If
     r = 0
     If sc_raw > 0 Then
-    For i = 6 To 11
+    For i = 7 To 12
         If items(i) > 0 Then
-            Worksheets("BOM").Range("c" & sc_raw + r).Value = title(i)
-            Worksheets("BOM").Range("d" & sc_raw + r).Value = items(i)
-            Worksheets("BOM").Range("e" & sc_raw + r).Value = itemDesc(i)
-            Worksheets("BOM").Range("f" & sc_raw + r).Value = 1
+            Worksheets("BOM").Range("c" & sc_raw + r).value = title(i)
+            Worksheets("BOM").Range("d" & sc_raw + r).value = items(i)
+            Worksheets("BOM").Range("e" & sc_raw + r).value = itemDesc(i)
+            Worksheets("BOM").Range("f" & sc_raw + r).value = 1
             If items(i) = "7-OT-0007" Then
-                Worksheets("BOM").Range("f" & sc_raw + r).Value = 0.002
+                Worksheets("BOM").Range("f" & sc_raw + r).value = 0.002
             End If
             If items(i) = "7-PS-0014" And InStr(1, lookUpValue, "SMARTAK", vbTextCompare) > 0 Then
-                Worksheets("BOM").Range("f" & sc_raw + r).Value = 2
+                Worksheets("BOM").Range("f" & sc_raw + r).value = 2
             End If
             r = r + 1
         End If
@@ -137,7 +144,7 @@ End Function
 
 Function isInDb(ite As Variant, st As Worksheet)
     If ite <> 0 Then
-        isInDb = st.cellS(db_LOOK(ite, st), 3)
+        isInDb = st.cellS(db_LOOK(ite, st), 2)
     Else:
         isInDb = 0
     End If
